@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechStore - Catalogo Prodotti & Gestione Inventario | Valentyn Haidukov</title>
+  
+  <!-- OpenGraph Metadata per LinkedIn, WhatsApp e Social -->
+  <meta property="og:title" content="TechStore - Catalogo & Gestione Inventario Elettronica">
+  <meta property="og:description" content="Gestionale catalogo retail per elettronica di consumo, specifiche tecniche e preventivi rapido. Sviluppato da Valentyn Haidukov.">
+  <meta property="og:image" content="https://hv94.github.io/tech-store-catalog/anteprima.png">
+  <meta property="og:url" content="https://hv94.github.io/tech-store-catalog/">
+  <meta property="og:type" content="website">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <aside class="top-bar" aria-label="Informazioni sviluppatore">
+    <div class="container top-bar-content">
+      <div class="top-bar-left">
+        <span class="badge-role">Progetto Portfolio Retail & IT</span>
+        <span>Sviluppato da <strong>Valentyn Haidukov</strong> &bull; Perito Informatico (76/100)</span>
+      </div>
+      <div class="top-bar-right">
+        <a href="https://www.linkedin.com/in/valentyn-haidukov" target="_blank" rel="noopener noreferrer" class="link-social">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9h2.79v8.37H6.46v-8.37M7.86 6.54a1.62 1.62 0 1 0 0 3.24 1.62 1.62 0 0 0 0-3.24Z"/></svg>
+          LinkedIn
+        </a>
+        <a href="https://github.com/HV94/tech-store-catalog" target="_blank" rel="noopener noreferrer" class="link-social">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2Z"/></svg>
+          Codice GitHub
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Navbar -->
+  <header class="navbar">
+    <div class="container navbar-content">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>TechStore<span>Manager</span></h1>
+          <p>Catalogo Elettronica & POS Preventivi</p>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Header -->
+      <div class="header-metrics">
+        <div class="metric-chip">
+          <span class="metric-label">Articoli Attivi</span>
+          <span class="metric-value" id="stat-total-count">0</span>
+        </div>
+        <div class="metric-chip">
+          <span class="metric-label">Disponibili Subito</span>
+          <span class="metric-value text-success" id="stat-instock-count">0</span>
+        </div>
+        <div class="metric-chip hide-mobile">
+          <span class="metric-label">Offerte Volantino</span>
+          <span class="metric-value text-accent" id="stat-promo-count">0</span>
+        </div>
+      </div>
+
+      <!-- Cart / Quote Button -->
+      <div class="nav-actions">
+        <button class="btn btn-primary" id="btn-open-cart">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          <span>Preventivo Cassa</span>
+          <span class="cart-badge" id="cart-badge-count">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="container app-layout">
+    
+    <!-- Left / Top Controls Sidebar -->
+    <aside class="filters-panel">
+      <div class="filters-card">
+        <div class="card-header">
+          <h3>Filtri & Ricerca</h3>
+          <button class="btn-link" id="btn-reset-filters">Ripristina</button>
+        </div>
+
+        <!-- Search Input -->
+        <div class="filter-group">
+          <label for="search-input">Cerca Prodotto / Codice EAN</label>
+          <div class="search-box">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="search-input" placeholder="Es: MacBook, Galaxy, Cuffie, EAN...">
+          </div>
+        </div>
+
+        <!-- Category Selector -->
+        <div class="filter-group">
+          <label>Reparto / Categoria</label>
+          <div class="category-pills" id="category-pills">
+            <button class="cat-pill active" data-category="all">Tutti i Reparti</button>
+            <button class="cat-pill" data-category="laptop">Notebook & PC</button>
+            <button class="cat-pill" data-category="smartphone">Smartphone & Tablet</button>
+            <button class="cat-pill" data-category="audio">Audio & Smart TV</button>
+            <button class="cat-pill" data-category="accessori">Accessori & Gaming</button>
+          </div>
+        </div>
+
+        <!-- Brand Selector -->
+        <div class="filter-group">
+          <label for="brand-select">Marca / Produttore</label>
+          <select id="brand-select" class="form-select">
+            <option value="all">Tutti i Marchi</option>
+            <option value="Apple">Apple</option>
+            <option value="Samsung">Samsung</option>
+            <option value="Lenovo">Lenovo</option>
+            <option value="ASUS">ASUS</option>
+            <option value="Sony">Sony</option>
+            <option value="Xiaomi">Xiaomi</option>
+            <option value="Logitech">Logitech</option>
+          </select>
+        </div>
+
+        <!-- Sorting -->
+        <div class="filter-group">
+          <label for="sort-select">Ordina Risultati</label>
+          <select id="sort-select" class="form-select">
+            <option value="featured">In Evidenza / Novità</option>
+            <option value="price-asc">Prezzo: dal più basso</option>
+            <option value="price-desc">Prezzo: dal più alto</option>
+            <option value="discount">Miglior Sconto %</option>
+            <option value="stock">Disponibilità Magazzino</option>
+          </select>
+        </div>
+
+        <!-- Quick Toggles -->
+        <div class="filter-group toggles-group">
+          <label class="toggle-control">
+            <input type="checkbox" id="toggle-promo-only">
+            <span class="toggle-switch"></span>
+            <span class="toggle-label">Solo Offerte Promozionali</span>
+          </label>
+          <label class="toggle-control">
+            <input type="checkbox" id="toggle-instock-only">
+            <span class="toggle-switch"></span>
+            <span class="toggle-label">Solo Articoli a Magazzino</span>
+          </label>
+        </div>
+
+        <!-- Skills highlight box for recruiters -->
+        <div class="recruiter-box">
+          <div class="recruiter-box-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            Competenze Dimostrate
+          </div>
+          <ul class="recruiter-list">
+            <li>Catalogazione hardware & specifiche</li>
+            <li>Lettura codici EAN & barcode cassa</li>
+            <li>Calcolo sconti IVA & preventivazione</li>
+            <li>Consulenza tecnica su misura per il cliente</li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Catalog View -->
+    <section class="catalog-section">
+      <!-- Section Header -->
+      <div class="catalog-header">
+        <div class="catalog-header-info">
+          <h2 id="catalog-title">Tutti i Prodotti</h2>
+          <span class="results-count" id="results-count">12 articoli visualizzati</span>
+        </div>
+        <div class="view-toggles">
+          <span class="tag-status">Pronto per Cassa Touch & Barcode</span>
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="products-grid" id="products-grid">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="empty-state" style="display: none;">
+        <div class="empty-icon">🔍</div>
+        <h3>Nessun prodotto trovato</h3>
+        <p>Prova a modificare i termini di ricerca o a resettare i filtri impostati.</p>
+        <button class="btn btn-secondary" onclick="resetAllFilters()">Azzera Tutti i Filtri</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal Dettaglio & Scheda Tecnica -->
+  <div class="modal-overlay" id="product-modal">
+    <div class="modal-card">
+      <button class="modal-close" id="modal-close-btn" aria-label="Chiudi finestra">&times;</button>
+      <div class="modal-body" id="modal-content">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawer Preventivo / Cassa -->
+  <div class="drawer-overlay" id="cart-drawer-overlay"></div>
+  <aside class="cart-drawer" id="cart-drawer">
+    <div class="drawer-header">
+      <div class="drawer-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <h3>Preventivo & Carrello Cassa</h3>
+      </div>
+      <button class="btn-icon" id="drawer-close-btn">&times;</button>
+    </div>
+
+    <div class="drawer-content" id="cart-items-container">
+      <!-- Carrello elementi -->
+    </div>
+
+    <div class="drawer-footer">
+      <div class="summary-line">
+        <span>Subtotale (Imponibile):</span>
+        <strong id="cart-subtotal">€ 0,00</strong>
+      </div>
+      <div class="summary-line">
+        <span>IVA (22%):</span>
+        <strong id="cart-iva">€ 0,00</strong>
+      </div>
+      <div class="summary-line total-line">
+        <span>Totale Preventivo:</span>
+        <strong id="cart-total">€ 0,00</strong>
+      </div>
+
+      <div class="drawer-actions">
+        <button class="btn btn-success btn-block" onclick="window.print()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 6 2 18 2 18 9"/>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+            <rect x="6" y="14" width="12" height="8"/>
+          </svg>
+          Stampa Scheda Preventivo
+        </button>
+        <button class="btn btn-outline btn-block" id="btn-clear-cart">Svuota Carrello</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="container footer-content">
+      <div class="footer-left">
+        <strong>TechStore Manager</strong> &bull; Progetto dimostrativo per posizioni Store Associate / Data Management
+      </div>
+      <div class="footer-right">
+        <span>Curato da <strong>Valentyn Haidukov</strong> &bull; Città Sant'Angelo (PE)</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
