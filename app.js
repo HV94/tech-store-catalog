@@ -1,5 +1,5 @@
 /**
- * TechStore Manager - Catalogo Elettronica, Gestione Inventario & POS Preventivi
+ * TechStore Manager - Catalogo & Cassa Registratore POS
  * Sviluppato da Valentyn Haidukov (Perito Informatico - Categorie Protette L. 68/99)
  */
 
@@ -1771,25 +1771,87 @@ const PRODUCTS_DATA = [
   }
 ];
 
-// Stato dell'applicazione
-let state = {
-  products: JSON.parse(JSON.stringify(PRODUCTS_DATA)),
-  filteredProducts: [],
-  searchQuery: "",
-  selectedCategory: "all",
-  selectedBrand: "all",
-  sortBy: "featured",
-  promoOnly: false,
-  inStockOnly: false,
-  cart: []
-};
+// Stato Prodotti & Catalogo
+let products = JSON.parse(JSON.stringify(PRODUCTS_DATA));
+let filteredProducts = [];
+let searchQuery = "";
+let selectedCategory = "all";
+let selectedBrand = "all";
+let sortBy = "featured";
+let promoOnly = false;
+let inStockOnly = false;
 
-// Stato Cassa POS & Pagamenti
+// Stato Carrello & Cassa POS
+let cart = [];
 let currentPaymentMethod = "cash";
 let posSimulatedAuth = null;
 let lastCompletedSale = null;
 
-// SVG Icons Helper
+// Elementi DOM Principali
+const productsGrid = document.getElementById("products-grid");
+const emptyState = document.getElementById("empty-state");
+const resultsCount = document.getElementById("results-count");
+const searchInput = document.getElementById("search-input");
+const brandSelect = document.getElementById("brand-select");
+const sortSelect = document.getElementById("sort-select");
+const togglePromoOnly = document.getElementById("toggle-promo-only");
+const toggleInstockOnly = document.getElementById("toggle-instock-only");
+const btnResetFilters = document.getElementById("btn-reset-filters");
+
+// Elementi Cassa Drawer (Identici a BiblioTech)
+const btnOpenCart = document.getElementById("btn-open-cart");
+const cartOverlay = document.getElementById("cartOverlay");
+const cartDrawer = document.getElementById("cartDrawer");
+const closeCartBtn = document.getElementById("closeCartBtn");
+const cartCountBadge = document.getElementById("cartCountBadge");
+const cartEmptyState = document.getElementById("cartEmptyState");
+const cartItemsList = document.getElementById("cartItemsList");
+const cartDrawerFooter = document.getElementById("cartDrawerFooter");
+const cartTotalItems = document.getElementById("cartTotalItems");
+const cartSubtotal = document.getElementById("cartSubtotal");
+const cartIva = document.getElementById("cartIva");
+const cartGrandTotal = document.getElementById("cartGrandTotal");
+
+// Elementi Pagamento
+const payMethodCash = document.getElementById("payMethodCash");
+const payMethodPos = document.getElementById("payMethodPos");
+const cashPaymentBox = document.getElementById("cashPaymentBox");
+const posPaymentBox = document.getElementById("posPaymentBox");
+const cashReceivedInput = document.getElementById("cashReceivedInput");
+const cashExactBtn = document.getElementById("cashExactBtn");
+const changeDueBox = document.getElementById("changeDueBox");
+const changeDueValue = document.getElementById("changeDueValue");
+const posStatusText = document.getElementById("posStatusText");
+const posSimulateBtn = document.getElementById("posSimulateBtn");
+const checkoutBtn = document.getElementById("checkoutBtn");
+const clearCartBtn = document.getElementById("clearCartBtn");
+
+// Modale Scontrino Fiscale
+const receiptModal = document.getElementById("receiptModal");
+const receiptOverlay = document.getElementById("receiptOverlay");
+const receiptDate = document.getElementById("receiptDate");
+const receiptDocId = document.getElementById("receiptDocId");
+const receiptItemsContainer = document.getElementById("receiptItemsContainer");
+const receiptSubtotalAmount = document.getElementById("receiptSubtotalAmount");
+const receiptIvaAmount = document.getElementById("receiptIvaAmount");
+const receiptTotalAmount = document.getElementById("receiptTotalAmount");
+const receiptPaymentType = document.getElementById("receiptPaymentType");
+const receiptCashRow = document.getElementById("receiptCashRow");
+const receiptCashReceived = document.getElementById("receiptCashReceived");
+const receiptChangeRow = document.getElementById("receiptChangeRow");
+const receiptChangeAmount = document.getElementById("receiptChangeAmount");
+const receiptPosRow = document.getElementById("receiptPosRow");
+const receiptPosAuth = document.getElementById("receiptPosAuth");
+const downloadPdfReceiptBtn = document.getElementById("downloadPdfReceiptBtn");
+const printReceiptBtn = document.getElementById("printReceiptBtn");
+const closeReceiptBtn = document.getElementById("closeReceiptBtn");
+
+// Modal Dettaglio Prodotto
+const productModal = document.getElementById("product-modal");
+const modalContent = document.getElementById("modal-content");
+const modalCloseBtn = document.getElementById("modal-close-btn");
+
+// Helper Icone SVG
 function getProductSvg(type) {
   switch (type) {
     case 'laptop':
@@ -1811,7 +1873,7 @@ function getProductSvg(type) {
   }
 }
 
-// Inizializzazione al caricamento del DOM
+// Inizializzazione
 document.addEventListener("DOMContentLoaded", () => {
   populateBrands();
   setupEventListeners();
@@ -1819,206 +1881,152 @@ document.addEventListener("DOMContentLoaded", () => {
   updateHeaderStats();
 });
 
-// Popola selettore marchi dinamicamente
 function populateBrands() {
-  const brandSelect = document.getElementById("brand-select");
   if (!brandSelect) return;
-  const brands = Array.from(new Set(state.products.map(p => p.brand))).sort();
+  const brands = Array.from(new Set(products.map(p => p.brand))).sort();
   brandSelect.innerHTML = '<option value="all">Tutti i Marchi</option>' +
     brands.map(b => `<option value="${b}">${b}</option>`).join('');
 }
 
-// Configurazione Event Listener
 function setupEventListeners() {
-  // Ricerca testuale rapida
-  const searchInput = document.getElementById("search-input");
+  // Ricerca
   searchInput.addEventListener("input", (e) => {
-    state.searchQuery = e.target.value.toLowerCase().trim();
+    searchQuery = e.target.value.toLowerCase().trim();
     applyFilters();
   });
 
-  // Filtro Categoria Pills
+  // Category Pills
   const catPills = document.querySelectorAll(".cat-pill");
   catPills.forEach(pill => {
     pill.addEventListener("click", () => {
       catPills.forEach(p => p.classList.remove("active"));
       pill.classList.add("active");
-      state.selectedCategory = pill.dataset.category;
+      selectedCategory = pill.dataset.category;
       applyFilters();
     });
   });
 
-  // Filtro Brand
-  const brandSelect = document.getElementById("brand-select");
+  // Brand
   brandSelect.addEventListener("change", (e) => {
-    state.selectedBrand = e.target.value;
+    selectedBrand = e.target.value;
     applyFilters();
   });
 
-  // Ordinamento
-  const sortSelect = document.getElementById("sort-select");
+  // Sort
   sortSelect.addEventListener("change", (e) => {
-    state.sortBy = e.target.value;
+    sortBy = e.target.value;
     applyFilters();
   });
 
-  // Toggle promozioni & magazzino
-  document.getElementById("toggle-promo-only").addEventListener("change", (e) => {
-    state.promoOnly = e.target.checked;
+  // Toggles
+  togglePromoOnly.addEventListener("change", (e) => {
+    promoOnly = e.target.checked;
+    applyFilters();
+  });
+  toggleInstockOnly.addEventListener("change", (e) => {
+    inStockOnly = e.target.checked;
     applyFilters();
   });
 
-  document.getElementById("toggle-instock-only").addEventListener("change", (e) => {
-    state.inStockOnly = e.target.checked;
-    applyFilters();
+  btnResetFilters.addEventListener("click", resetAllFilters);
+
+  // Modal Dettaglio
+  modalCloseBtn.addEventListener("click", closeModal);
+  productModal.addEventListener("click", (e) => {
+    if (e.target === productModal) closeModal();
   });
 
-  // Reset filtri
-  document.getElementById("btn-reset-filters").addEventListener("click", resetAllFilters);
+  // Cassa Drawer (Identico a BiblioTech)
+  btnOpenCart.addEventListener("click", openCart);
+  closeCartBtn.addEventListener("click", closeCart);
+  cartOverlay.addEventListener("click", closeCart);
+  clearCartBtn.addEventListener("click", clearCart);
 
-  // Modal Scheda Tecnica close
-  document.getElementById("modal-close-btn").addEventListener("click", closeModal);
-  document.getElementById("product-modal").addEventListener("click", (e) => {
-    if (e.target.id === "product-modal") closeModal();
-  });
+  // Metodi Pagamento (Contanti / POS)
+  payMethodCash.addEventListener("click", () => setPaymentMethod("cash"));
+  payMethodPos.addEventListener("click", () => setPaymentMethod("pos"));
 
-  // Carrello / Drawer POS
-  document.getElementById("btn-open-cart").addEventListener("click", openCartDrawer);
-  document.getElementById("drawer-close-btn").addEventListener("click", closeCartDrawer);
-  document.getElementById("cart-drawer-overlay").addEventListener("click", closeCartDrawer);
-  document.getElementById("btn-clear-cart").addEventListener("click", clearCart);
-
-  // Gestione Pagamento Contanti / Carta
-  const btnPayCash = document.getElementById("btn-pay-cash");
-  const btnPayCard = document.getElementById("btn-pay-card");
-  const cashBox = document.getElementById("cash-payment-box");
-  const cardBox = document.getElementById("card-payment-box");
-  const cashInput = document.getElementById("cash-given-input");
-
-  if (btnPayCash && btnPayCard) {
-    btnPayCash.addEventListener("click", () => {
-      currentPaymentMethod = "cash";
-      btnPayCash.classList.add("active");
-      btnPayCard.classList.remove("active");
-      cashBox.style.display = "flex";
-      cardBox.style.display = "none";
-      calculateCashChange();
-    });
-
-    btnPayCard.addEventListener("click", () => {
-      currentPaymentMethod = "card";
-      btnPayCard.classList.add("active");
-      btnPayCash.classList.remove("active");
-      cashBox.style.display = "none";
-      cardBox.style.display = "flex";
-      calculateCashChange();
-    });
-  }
-
-  if (cashInput) {
-    cashInput.addEventListener("input", calculateCashChange);
-  }
+  // Input contanti
+  cashReceivedInput.addEventListener("input", calculateCashChange);
 
   // Quick cash buttons
-  const quickButtons = document.querySelectorAll(".quick-cash-btn");
-  quickButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      let currentVal = parseFloat(cashInput.value) || 0;
+  cashExactBtn.addEventListener("click", () => {
+    const total = getCartTotal();
+    cashReceivedInput.value = total.toFixed(2);
+    calculateCashChange();
+  });
 
-      if (btn.dataset.action === "exact") {
-        currentVal = total;
-      } else if (btn.dataset.add) {
-        currentVal += parseFloat(btn.dataset.add);
-      }
-      cashInput.value = currentVal.toFixed(2);
+  const quickBtns = document.querySelectorAll(".btn-cash-quick[data-amount]");
+  quickBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const add = parseFloat(btn.dataset.amount);
+      let cur = parseFloat(cashReceivedInput.value) || 0;
+      cashReceivedInput.value = (cur + add).toFixed(2);
       calculateCashChange();
     });
   });
 
-  // Pulsante Checkout Cassa
-  const checkoutBtn = document.getElementById("btn-checkout-sale");
-  if (checkoutBtn) {
-    checkoutBtn.addEventListener("click", processCheckout);
-  }
+  // Simulatore POS
+  posSimulateBtn.addEventListener("click", simulatePosPayment);
 
-  // Ricevuta Modal Listeners
-  const downloadBtn = document.getElementById("downloadPdfReceiptBtn");
-  const printBtn = document.getElementById("printReceiptBtn");
-  const closeReceiptBtn = document.getElementById("closeReceiptBtn");
-  const receiptModal = document.getElementById("receiptModal");
+  // Checkout
+  checkoutBtn.addEventListener("click", processCheckout);
 
-  if (downloadBtn) {
-    downloadBtn.addEventListener("click", downloadReceiptPdf);
-  }
-  if (printBtn) {
-    printBtn.addEventListener("click", () => {
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      if (isMobile) {
-        downloadReceiptPdf();
-      } else {
-        window.print();
-      }
-    });
-  }
-  if (closeReceiptBtn) {
-    closeReceiptBtn.addEventListener("click", closeReceiptModal);
-  }
-  if (receiptModal) {
-    receiptModal.addEventListener("click", (e) => {
-      if (e.target.id === "receiptModal") closeReceiptModal();
-    });
-  }
+  // Modale Scontrino Fiscale
+  downloadPdfReceiptBtn.addEventListener("click", downloadReceiptPdf);
+  printReceiptBtn.addEventListener("click", () => {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+      downloadReceiptPdf();
+    } else {
+      window.print();
+    }
+  });
+  closeReceiptBtn.addEventListener("click", closeReceipt);
+  receiptOverlay.addEventListener("click", closeReceipt);
 
-  // Tasto ESC per chiudere i modali
+  // Tasto ESC
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       closeModal();
-      closeCartDrawer();
-      closeReceiptModal();
+      closeCart();
+      closeReceipt();
     }
   });
 }
 
-// Logica di Filtraggio & Ordinamento
+// Logica di Filtraggio
 function applyFilters() {
-  let list = [...state.products];
+  let list = [...products];
 
-  // Filtro Categoria
-  if (state.selectedCategory !== "all") {
-    list = list.filter(p => p.category === state.selectedCategory);
+  if (selectedCategory !== "all") {
+    list = list.filter(p => p.category === selectedCategory);
   }
 
-  // Filtro Marchio
-  if (state.selectedBrand !== "all") {
-    list = list.filter(p => p.brand.toLowerCase() === state.selectedBrand.toLowerCase());
+  if (selectedBrand !== "all") {
+    list = list.filter(p => p.brand.toLowerCase() === selectedBrand.toLowerCase());
   }
 
-  // Toggle Solo Promo
-  if (state.promoOnly) {
+  if (promoOnly) {
     list = list.filter(p => p.isPromo);
   }
 
-  // Toggle Solo a Magazzino
-  if (state.inStockOnly) {
+  if (inStockOnly) {
     list = list.filter(p => p.stock > 0);
   }
 
-  // Ricerca libera
-  if (state.searchQuery !== "") {
-    const q = state.searchQuery;
+  if (searchQuery !== "") {
     list = list.filter(p => {
-      const matchName = p.name.toLowerCase().includes(q);
-      const matchModel = p.modelCode.toLowerCase().includes(q);
-      const matchBarcode = p.barcode.includes(q);
-      const matchBrand = p.brand.toLowerCase().includes(q);
-      const matchSpecs = p.specs.some(s => s.toLowerCase().includes(q));
+      const matchName = p.name.toLowerCase().includes(searchQuery);
+      const matchModel = p.modelCode.toLowerCase().includes(searchQuery);
+      const matchBarcode = p.barcode.includes(searchQuery);
+      const matchBrand = p.brand.toLowerCase().includes(searchQuery);
+      const matchSpecs = p.specs.some(s => s.toLowerCase().includes(searchQuery));
       return matchName || matchModel || matchBarcode || matchBrand || matchSpecs;
     });
   }
 
-  // Ordinamento
-  switch (state.sortBy) {
+  switch (sortBy) {
     case "price-asc":
       list.sort((a, b) => a.price - b.price);
       break;
@@ -2041,26 +2049,22 @@ function applyFilters() {
       break;
   }
 
-  state.filteredProducts = list;
+  filteredProducts = list;
   renderProducts();
 }
 
-// Rendering dei Prodotti nella Griglia
+// Rendering Catalogo Prodotti
 function renderProducts() {
-  const grid = document.getElementById("products-grid");
-  const emptyState = document.getElementById("empty-state");
-  const countLabel = document.getElementById("results-count");
+  resultsCount.textContent = `${filteredProducts.length} ${filteredProducts.length === 1 ? 'articolo visualizzato' : 'articoli visualizzati'}`;
 
-  countLabel.textContent = `${state.filteredProducts.length} ${state.filteredProducts.length === 1 ? 'articolo visualizzato' : 'articoli visualizzati'}`;
-
-  if (state.filteredProducts.length === 0) {
-    grid.innerHTML = "";
+  if (filteredProducts.length === 0) {
+    productsGrid.innerHTML = "";
     emptyState.style.display = "block";
     return;
   }
 
   emptyState.style.display = "none";
-  grid.innerHTML = state.filteredProducts.map(p => {
+  productsGrid.innerHTML = filteredProducts.map(p => {
     const discount = p.originalPrice ? Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100) : 0;
     const isLowStock = p.stock > 0 && p.stock <= 3;
     const isOutOfStock = p.stock === 0;
@@ -2114,7 +2118,7 @@ function renderProducts() {
               </svg>
               Scheda
             </button>
-            <button class="btn btn-primary" onclick="addToCart(${p.id})" ${isOutOfStock ? 'disabled title="Prodotto esaurito a magazzino"' : 'title="Aggiungi al Preventivo / Cassa"'}>
+            <button class="btn btn-primary" onclick="addToCart(${p.id})" ${isOutOfStock ? 'disabled title="Esaurito a magazzino"' : 'title="Aggiungi alla Cassa POS"'}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 5v14M5 12h14"/>
               </svg>
@@ -2127,21 +2131,17 @@ function renderProducts() {
   }).join('');
 }
 
-// Aggiorna metriche nell'header
 function updateHeaderStats() {
-  document.getElementById("stat-total-count").textContent = state.products.length;
-  const inStock = state.products.filter(p => p.stock > 0).length;
-  document.getElementById("stat-instock-count").textContent = inStock;
-  const inPromo = state.products.filter(p => p.isPromo).length;
-  document.getElementById("stat-promo-count").textContent = inPromo;
+  document.getElementById("stat-total-count").textContent = products.length;
+  document.getElementById("stat-instock-count").textContent = products.filter(p => p.stock > 0).length;
+  document.getElementById("stat-promo-count").textContent = products.filter(p => p.isPromo).length;
 }
 
 // Modal Scheda Tecnica
 function openProductModal(id) {
-  const p = state.products.find(item => item.id === id);
+  const p = products.find(item => item.id === id);
   if (!p) return;
 
-  const modalBody = document.getElementById("modal-content");
   let specsRows = "";
   for (const [key, value] of Object.entries(p.fullSpecs)) {
     specsRows += `
@@ -2152,7 +2152,7 @@ function openProductModal(id) {
     `;
   }
 
-  modalBody.innerHTML = `
+  modalContent.innerHTML = `
     <div class="modal-header-section">
       <div class="modal-icon-lg">
         ${getProductSvg(p.icon)}
@@ -2164,7 +2164,7 @@ function openProductModal(id) {
       </div>
     </div>
 
-    <!-- Consulenza Cliente Retail (Punti di forza) -->
+    <!-- Guida alla Vendita & Consulenza Cliente -->
     <div class="consultation-box">
       <h4>💡 Guida alla Vendita & Consulenza per il Cliente</h4>
       <p>${escapeHtml(p.pitch)}</p>
@@ -2191,32 +2191,31 @@ function openProductModal(id) {
           <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
         </svg>
-        ${p.stock === 0 ? 'Prodotto Esaurito' : 'Aggiungi al Preventivo / Cassa'}
+        ${p.stock === 0 ? 'Esaurito a magazzino' : 'Aggiungi alla Cassa POS'}
       </button>
     </div>
   `;
 
-  document.getElementById("product-modal").classList.add("open");
+  productModal.classList.add("open");
 }
 
 function closeModal() {
-  document.getElementById("product-modal").classList.remove("open");
+  productModal.classList.remove("open");
 }
 
-// Reset di tutti i filtri
 function resetAllFilters() {
-  state.searchQuery = "";
-  state.selectedCategory = "all";
-  state.selectedBrand = "all";
-  state.sortBy = "featured";
-  state.promoOnly = false;
-  state.inStockOnly = false;
+  searchQuery = "";
+  selectedCategory = "all";
+  selectedBrand = "all";
+  sortBy = "featured";
+  promoOnly = false;
+  inStockOnly = false;
 
-  document.getElementById("search-input").value = "";
-  document.getElementById("brand-select").value = "all";
-  document.getElementById("sort-select").value = "featured";
-  document.getElementById("toggle-promo-only").checked = false;
-  document.getElementById("toggle-instock-only").checked = false;
+  searchInput.value = "";
+  brandSelect.value = "all";
+  sortSelect.value = "featured";
+  togglePromoOnly.checked = false;
+  toggleInstockOnly.checked = false;
 
   const catPills = document.querySelectorAll(".cat-pill");
   catPills.forEach(pill => {
@@ -2226,181 +2225,225 @@ function resetAllFilters() {
   applyFilters();
 }
 
-// Gestione Preventivo & Carrello Cassa
-function addToCart(id) {
-  const product = state.products.find(p => p.id === id);
-  if (!product || product.stock <= 0) return;
+// =========================================================================
+// GESTIONE CASSA & CARRELLO (IDENTICO A BIBLIOTECH)
+// =========================================================================
+function openCart() {
+  cartDrawer.classList.add("open");
+  cartOverlay.classList.add("open");
+  calculateCashChange();
+}
 
-  const existing = state.cart.find(item => item.id === id);
+function closeCart() {
+  cartDrawer.classList.remove("open");
+  cartOverlay.classList.remove("open");
+}
+
+function getCartTotal() {
+  return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+}
+
+window.addToCart = function(id) {
+  const prod = products.find(p => p.id === id);
+  if (!prod) return;
+
+  if (prod.stock <= 0) {
+    alert(`"${prod.name}" è esaurito a magazzino!`);
+    return;
+  }
+
+  const existing = cart.find(item => item.id === id);
   if (existing) {
-    if (existing.quantity < product.stock) {
+    if (existing.quantity < prod.stock) {
       existing.quantity += 1;
     } else {
-      alert(`Disponibilità massima per "${product.name}" raggiunta (${product.stock} pz a magazzino).`);
+      alert(`Hai già inserito nella cassa tutti i ${prod.stock} pezzi disponibili a magazzino!`);
       return;
     }
   } else {
-    state.cart.push({ ...product, quantity: 1 });
+    cart.push({
+      id: prod.id,
+      name: prod.name,
+      modelCode: prod.modelCode,
+      brand: prod.brand,
+      barcode: prod.barcode,
+      price: Number(prod.price),
+      quantity: 1,
+      maxStock: prod.stock
+    });
   }
 
   updateCartUI();
-  openCartDrawer();
-}
+  openCart();
+};
 
-function updateCartQty(id, delta) {
-  const item = state.cart.find(i => i.id === id);
-  const product = state.products.find(p => p.id === id);
-  if (!item || !product) return;
+window.updateCartQty = function(id, delta) {
+  const item = cart.find(i => i.id === id);
+  const prod = products.find(p => p.id === id);
+  if (!item || !prod) return;
 
-  if (delta > 0 && item.quantity >= product.stock) {
-    alert(`Disponibilità massima raggiunta (${product.stock} pezzi a magazzino).`);
+  const newQty = item.quantity + delta;
+  if (newQty <= 0) {
+    cart = cart.filter(i => i.id !== id);
+  } else if (newQty > prod.stock) {
+    alert(`Disponibilità massima raggiunta (${prod.stock} pezzi a magazzino).`);
     return;
-  }
-
-  item.quantity += delta;
-  if (item.quantity <= 0) {
-    state.cart = state.cart.filter(i => i.id !== id);
+  } else {
+    item.quantity = newQty;
   }
 
   updateCartUI();
-}
+};
+
+window.removeFromCart = function(id) {
+  cart = cart.filter(i => i.id !== id);
+  updateCartUI();
+};
 
 function clearCart() {
-  state.cart = [];
-  updateCartUI();
+  if (cart.length === 0) return;
+  if (confirm("Vuoi svuotare la cassa?")) {
+    cart = [];
+    updateCartUI();
+  }
 }
 
 function updateCartUI() {
-  const container = document.getElementById("cart-items-container");
-  const badge = document.getElementById("cart-badge-count");
-  const subtotalEl = document.getElementById("cart-subtotal");
-  const ivaEl = document.getElementById("cart-iva");
-  const totalEl = document.getElementById("cart-total");
-  const checkoutBtn = document.getElementById("btn-checkout-sale");
+  const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const totalAmount = getCartTotal();
+  const iva = totalAmount * (0.22 / 1.22); // 22% scorporo
+  const subtotal = totalAmount - iva;
 
-  const totalItems = state.cart.reduce((sum, item) => sum + item.quantity, 0);
-  badge.textContent = totalItems;
+  // Badge header
+  cartCountBadge.textContent = totalQty;
+  if (totalQty > 0) {
+    cartCountBadge.style.display = "inline-flex";
+  } else {
+    cartCountBadge.style.display = "none";
+  }
 
-  if (state.cart.length === 0) {
-    container.innerHTML = `
-      <div style="text-align: center; padding: 2.5rem 1rem; color: var(--text-dim);">
-        <p style="font-size: 1.5rem; margin-bottom: 0.5rem;">🛒</p>
-        <p style="font-weight: 600; color: var(--text-muted);">Il carrello preventivi è vuoto.</p>
-        <p style="font-size: 0.8125rem;">Aggiungi prodotti dal catalogo per simulare scontrino o preventivo fiscale.</p>
-      </div>
-    `;
-    subtotalEl.textContent = "€ 0,00";
-    ivaEl.textContent = "€ 0,00";
-    totalEl.textContent = "€ 0,00";
-    if (checkoutBtn) checkoutBtn.disabled = true;
-    calculateCashChange();
+  if (cart.length === 0) {
+    cartEmptyState.classList.remove("hidden");
+    cartItemsList.classList.add("hidden");
+    cartDrawerFooter.classList.add("hidden");
     return;
   }
 
-  if (checkoutBtn) checkoutBtn.disabled = false;
+  cartEmptyState.classList.add("hidden");
+  cartItemsList.classList.remove("hidden");
+  cartDrawerFooter.classList.remove("hidden");
 
-  container.innerHTML = state.cart.map(item => `
-    <div class="cart-item">
-      <div class="cart-item-info">
-        <h4>${escapeHtml(item.name)}</h4>
-        <p>€ ${item.price.toFixed(2).replace('.', ',')} &bull; EAN: ${item.barcode}</p>
+  // Render righe carrello
+  cartItemsList.innerHTML = cart.map(item => {
+    const sub = item.price * item.quantity;
+    return `
+      <div class="cart-item-row">
+        <div class="cart-item-info">
+          <div class="cart-item-title" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</div>
+          <div class="cart-item-author">EAN: ${item.barcode} &bull; Mod: ${escapeHtml(item.modelCode)}</div>
+          <div class="cart-item-price">€ ${item.price.toFixed(2).replace('.', ',')} x ${item.quantity} = € ${sub.toFixed(2).replace('.', ',')}</div>
+        </div>
+        <div class="cart-qty-controls">
+          <button class="btn-qty" onclick="updateCartQty(${item.id}, -1)" title="Diminuisci">-</button>
+          <span class="cart-qty-value">${item.quantity}</span>
+          <button class="btn-qty" onclick="updateCartQty(${item.id}, 1)" ${item.quantity >= item.maxStock ? 'disabled' : ''} title="Aumenta">+</button>
+          <button class="btn-cart-remove" onclick="removeFromCart(${item.id})" title="Rimuovi">&times;</button>
+        </div>
       </div>
-      <div class="cart-item-qty">
-        <button class="qty-btn" onclick="updateCartQty(${item.id}, -1)">-</button>
-        <span class="qty-count">${item.quantity}</span>
-        <button class="qty-btn" onclick="updateCartQty(${item.id}, 1)">+</button>
-      </div>
-    </div>
-  `).join('');
+    `;
+  }).join("");
 
-  const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const iva = total * (0.22 / 1.22); // Scorporo IVA 22%
-  const subtotal = total - iva;
-
-  subtotalEl.textContent = `€ ${subtotal.toFixed(2).replace('.', ',')}`;
-  ivaEl.textContent = `€ ${iva.toFixed(2).replace('.', ',')}`;
-  totalEl.textContent = `€ ${total.toFixed(2).replace('.', ',')}`;
+  cartTotalItems.textContent = `${totalQty} pezzi`;
+  cartSubtotal.textContent = `€ ${subtotal.toFixed(2).replace('.', ',')}`;
+  cartIva.textContent = `€ ${iva.toFixed(2).replace('.', ',')}`;
+  cartGrandTotal.textContent = `€ ${totalAmount.toFixed(2).replace('.', ',')}`;
 
   calculateCashChange();
 }
 
-function calculateCashChange() {
-  const cashInput = document.getElementById("cash-given-input");
-  const changeDisplay = document.getElementById("cash-change-display");
-  const changeAmountEl = document.getElementById("cash-change-amount");
-  const checkoutBtn = document.getElementById("btn-checkout-sale");
-  if (!cashInput || !changeDisplay || !changeAmountEl) return;
-
-  const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  if (total === 0) {
-    changeAmountEl.textContent = "€ 0,00";
-    changeDisplay.className = "cash-change-feedback exact";
-    return;
-  }
-
-  if (currentPaymentMethod === "card") {
-    if (checkoutBtn) checkoutBtn.disabled = state.cart.length === 0;
-    return;
-  }
-
-  const given = parseFloat(cashInput.value) || 0;
-  const change = given - total;
-
-  if (given === 0) {
-    changeDisplay.className = "cash-change-feedback exact";
-    changeDisplay.firstElementChild.textContent = "Inserire contanti:";
-    changeAmountEl.textContent = "€ 0,00";
-    if (checkoutBtn) checkoutBtn.disabled = true;
-  } else if (change >= 0) {
-    changeDisplay.className = "cash-change-feedback " + (change === 0 ? "exact" : "change");
-    changeDisplay.firstElementChild.textContent = "Resto da erogare:";
-    changeAmountEl.textContent = `€ ${change.toFixed(2).replace('.', ',')}`;
-    if (checkoutBtn) checkoutBtn.disabled = false;
+function setPaymentMethod(method) {
+  currentPaymentMethod = method;
+  if (method === "cash") {
+    payMethodCash.classList.add("active");
+    payMethodPos.classList.remove("active");
+    cashPaymentBox.classList.remove("hidden");
+    posPaymentBox.classList.add("hidden");
   } else {
-    changeDisplay.className = "cash-change-feedback missing";
-    changeDisplay.firstElementChild.textContent = "Importo insufficiente (Mancano):";
-    changeAmountEl.textContent = `€ ${Math.abs(change).toFixed(2).replace('.', ',')}`;
-    if (checkoutBtn) checkoutBtn.disabled = true;
+    payMethodPos.classList.add("active");
+    payMethodCash.classList.remove("active");
+    posPaymentBox.classList.remove("hidden");
+    cashPaymentBox.classList.add("hidden");
   }
 }
 
-function openCartDrawer() {
-  document.getElementById("cart-drawer").classList.add("open");
-  document.getElementById("cart-drawer-overlay").classList.add("open");
+function calculateCashChange() {
+  const total = getCartTotal();
+  const received = parseFloat(cashReceivedInput.value);
+
+  if (isNaN(received) || received === 0) {
+    changeDueBox.className = "change-box info";
+    changeDueBox.innerHTML = `<span>Resto dovuto al cliente:</span><strong>€ 0,00</strong>`;
+    return;
+  }
+
+  const diff = received - total;
+  if (diff >= 0) {
+    changeDueBox.className = "change-box info";
+    changeDueBox.innerHTML = `<span>Resto dovuto al cliente:</span><strong>€ ${diff.toFixed(2).replace('.', ',')}</strong>`;
+  } else {
+    changeDueBox.className = "change-box error";
+    changeDueBox.innerHTML = `<span>Importo insufficiente:</span><strong>- € ${Math.abs(diff).toFixed(2).replace('.', ',')}</strong>`;
+  }
 }
 
-function closeCartDrawer() {
-  document.getElementById("cart-drawer").classList.remove("open");
-  document.getElementById("cart-drawer-overlay").classList.remove("open");
+function simulatePosPayment() {
+  posStatusText.textContent = "⏳ Connessione al circuito bancario in corso...";
+  posSimulateBtn.disabled = true;
+
+  setTimeout(() => {
+    posSimulatedAuth = "#TS-" + Math.floor(10000 + Math.random() * 90000);
+    posStatusText.innerHTML = `✅ <strong>TRANSAZIONE APPROVATA!</strong> Codice AUTH: ${posSimulatedAuth}`;
+    posSimulateBtn.disabled = false;
+  }, 600);
 }
 
-// Elaborazione Vendita & Scarico Magazzino
 function processCheckout() {
-  if (state.cart.length === 0) return;
+  if (cart.length === 0) {
+    alert("La cassa è vuota!");
+    return;
+  }
 
-  const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const total = getCartTotal();
   const iva = total * (0.22 / 1.22);
   const subtotal = total - iva;
-  const cashInput = document.getElementById("cash-given-input");
-  let cashGiven = 0;
+
+  let cashGiven = parseFloat(cashReceivedInput.value);
   let change = 0;
 
   if (currentPaymentMethod === "cash") {
-    cashGiven = parseFloat(cashInput.value) || 0;
-    if (cashGiven < total) {
-      alert("L'importo in contanti inserito è inferiore al totale del documento!");
-      return;
+    if (isNaN(cashGiven) || cashGiven < total) {
+      if (isNaN(cashGiven) || cashGiven === 0) {
+        cashGiven = total;
+        change = 0;
+      } else {
+        alert(`Il contante inserito (€ ${cashGiven.toFixed(2)}) è inferiore al totale dovuto (€ ${total.toFixed(2)})!`);
+        cashReceivedInput.focus();
+        return;
+      }
+    } else {
+      change = cashGiven - total;
     }
-    change = cashGiven - total;
   } else {
-    posSimulatedAuth = `#TS-${Math.floor(10000 + Math.random() * 90000)}`;
+    if (!posSimulatedAuth) {
+      posSimulatedAuth = "#TS-" + Math.floor(10000 + Math.random() * 90000);
+    }
   }
 
   // 1. Scarico automatico scorte inventario
-  state.cart.forEach(cartItem => {
-    const prod = state.products.find(p => p.id === cartItem.id);
+  cart.forEach(item => {
+    const prod = products.find(p => p.id === item.id);
     if (prod) {
-      prod.stock = Math.max(0, prod.stock - cartItem.quantity);
+      prod.stock = Math.max(0, prod.stock - item.quantity);
     }
   });
 
@@ -2412,7 +2455,7 @@ function processCheckout() {
   lastCompletedSale = {
     docId: docId,
     date: dateStr,
-    items: state.cart.map(i => ({ ...i })),
+    items: cart.map(i => ({ ...i })),
     subtotal: subtotal,
     iva: iva,
     total: total,
@@ -2422,49 +2465,44 @@ function processCheckout() {
     authCode: posSimulatedAuth
   };
 
-  // 2. Mostra Scontrino / Documento di Vendita
+  // 2. Mostra Scontrino Fiscale
   showReceipt(lastCompletedSale);
 
-  // 3. Svuota Carrello e aggiorna UI catalogo
-  state.cart = [];
-  if (cashInput) cashInput.value = "";
+  // 3. Reset carrello cassa
+  cart = [];
+  cashReceivedInput.value = "";
+  posSimulatedAuth = null;
+  posStatusText.textContent = "Pronto per inserimento carta o Contactless...";
   updateCartUI();
-  closeCartDrawer();
+  closeCart();
+
+  // Aggiorna catalogo e statistiche
   applyFilters();
   updateHeaderStats();
 }
 
-// Visualizza Modale Scontrino Fiscale
 function showReceipt(sale) {
-  const modal = document.getElementById("receiptModal");
-  if (!modal || !sale) return;
-
-  document.getElementById("receiptDate").textContent = sale.date;
-  document.getElementById("receiptDocId").textContent = sale.docId;
-  document.getElementById("receiptSubtotal").textContent = `€ ${sale.subtotal.toFixed(2).replace('.', ',')}`;
-  document.getElementById("receiptIva").textContent = `€ ${sale.iva.toFixed(2).replace('.', ',')}`;
-  document.getElementById("receiptTotal").textContent = `€ ${sale.total.toFixed(2).replace('.', ',')}`;
-  document.getElementById("receiptPaymentType").textContent = sale.paymentType;
-
-  const cashRow = document.getElementById("receiptCashRow");
-  const changeRow = document.getElementById("receiptChangeRow");
-  const posRow = document.getElementById("receiptPosRow");
+  receiptDate.textContent = sale.date;
+  receiptDocId.textContent = sale.docId;
+  receiptSubtotalAmount.textContent = `€ ${sale.subtotal.toFixed(2).replace('.', ',')}`;
+  receiptIvaAmount.textContent = `€ ${sale.iva.toFixed(2).replace('.', ',')}`;
+  receiptTotalAmount.textContent = `€ ${sale.total.toFixed(2).replace('.', ',')}`;
+  receiptPaymentType.textContent = sale.paymentType;
 
   if (sale.paymentType === "CONTANTI") {
-    cashRow.style.display = "flex";
-    changeRow.style.display = "flex";
-    posRow.style.display = "none";
-    document.getElementById("receiptCashReceived").textContent = `€ ${sale.cashGiven.toFixed(2).replace('.', ',')}`;
-    document.getElementById("receiptChangeAmount").textContent = `€ ${sale.change.toFixed(2).replace('.', ',')}`;
+    receiptCashRow.style.display = "flex";
+    receiptChangeRow.style.display = "flex";
+    receiptPosRow.style.display = "none";
+    receiptCashReceived.textContent = `€ ${sale.cashGiven.toFixed(2).replace('.', ',')}`;
+    receiptChangeAmount.textContent = `€ ${sale.change.toFixed(2).replace('.', ',')}`;
   } else {
-    cashRow.style.display = "none";
-    changeRow.style.display = "none";
-    posRow.style.display = "flex";
-    document.getElementById("receiptPosAuth").textContent = sale.authCode;
+    receiptCashRow.style.display = "none";
+    receiptChangeRow.style.display = "none";
+    receiptPosRow.style.display = "flex";
+    receiptPosAuth.textContent = sale.authCode;
   }
 
-  const itemsContainer = document.getElementById("receiptItemsContainer");
-  itemsContainer.innerHTML = sale.items.map(item => `
+  receiptItemsContainer.innerHTML = sale.items.map(item => `
     <div>
       <div class="receipt-item-line">
         <span>${escapeHtml(item.name.substring(0, 24))}</span>
@@ -2476,12 +2514,11 @@ function showReceipt(sale) {
     </div>
   `).join('');
 
-  modal.classList.add("open");
+  receiptModal.classList.remove("hidden");
 }
 
-function closeReceiptModal() {
-  const modal = document.getElementById("receiptModal");
-  if (modal) modal.classList.remove("open");
+function closeReceipt() {
+  receiptModal.classList.add("hidden");
 }
 
 // ==========================================================================
@@ -2523,7 +2560,7 @@ function generateTechReceiptPdfBlob(sale) {
   lines.push("IVA 22% SCORPORO: " + " ".repeat(Math.max(1, 32 - 18 - ivaStr.length)) + ivaStr);
 
   const totStr = "EUR " + sale.total.toFixed(2);
-  lines.push("TOTALE DOCUMENTO: " + " ".repeat(Math.max(1, 32 - 18 - totStr.length)) + totStr);
+  lines.push("TOTALE COMPLESSIVO: " + " ".repeat(Math.max(1, 32 - 20 - totStr.length)) + totStr);
   lines.push("PAGAMENTO: " + sale.paymentType);
 
   if (sale.paymentType === "CONTANTI" && sale.cashGiven !== undefined) {
@@ -2577,7 +2614,6 @@ function generateTechReceiptPdfBlob(sale) {
   return new Blob([new TextEncoder().encode(body + xref + trailer)], { type: "application/pdf" });
 }
 
-// Download / Condivisione Scontrino PDF nativo (Mobile & Desktop 100% compatibile)
 function downloadReceiptPdf() {
   if (!lastCompletedSale) {
     alert("Nessun dato di vendita recente da scaricare!");
@@ -2586,34 +2622,32 @@ function downloadReceiptPdf() {
 
   const pdfBlob = generateTechReceiptPdfBlob(lastCompletedSale);
   if (!pdfBlob) {
-    alert("Errore nella generazione del documento PDF.");
+    alert("Errore nella generazione dello scontrino PDF.");
     return;
   }
 
   const fileName = "scontrino_techstore_" + Date.now() + ".pdf";
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  const downloadBtn = document.getElementById("downloadPdfReceiptBtn");
 
-  // Feedback visivo immediato per l'utente
-  if (downloadBtn) {
-    const originalText = downloadBtn.innerHTML;
-    downloadBtn.innerHTML = "⏳ Download in corso...";
-    downloadBtn.disabled = true;
+  if (downloadPdfReceiptBtn) {
+    const originalText = downloadPdfReceiptBtn.innerHTML;
+    downloadPdfReceiptBtn.innerHTML = "⏳ Download in corso...";
+    downloadPdfReceiptBtn.disabled = true;
     setTimeout(() => {
-      downloadBtn.innerHTML = originalText;
-      downloadBtn.disabled = false;
+      downloadPdfReceiptBtn.innerHTML = originalText;
+      downloadPdfReceiptBtn.disabled = false;
     }, 2500);
   }
 
-  // 1. Su smartphone: Prova con Web Share API (File PDF reale)
+  // 1. Smartphone: Web Share API nativa con file PDF reale
   if (isMobile && typeof navigator.share === "function" && typeof File !== "undefined") {
     try {
       const file = new File([pdfBlob], fileName, { type: "application/pdf" });
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         navigator.share({
           files: [file],
-          title: "Documento Fiscale TechStore",
-          text: "Scontrino / Preventivo TechStore - Totale: EUR " + lastCompletedSale.total.toFixed(2)
+          title: "Scontrino Fiscale TechStore",
+          text: "Scontrino TechStore - Totale: EUR " + lastCompletedSale.total.toFixed(2)
         }).catch(err => {
           if (err && err.name !== "AbortError") {
             fallbackMobilePdf(pdfBlob, fileName);
@@ -2626,13 +2660,13 @@ function downloadReceiptPdf() {
     }
   }
 
-  // 2. Se su smartphone Web Share non è supportato: apri direttamente il PDF nel visualizzatore del telefono
+  // 2. Fallback mobile
   if (isMobile) {
     fallbackMobilePdf(pdfBlob, fileName);
     return;
   }
 
-  // 3. Su computer Desktop (Windows/Mac/Linux): download classico diretto
+  // 3. Desktop download diretto classico
   triggerDirectDownload(pdfBlob, fileName);
 }
 
@@ -2670,10 +2704,13 @@ function escapeHtml(str) {
     .replace(/'/g, "&#039;");
 }
 
-// Esporta funzioni per handler inline
+// Esporta su window per onclick inline
 window.openProductModal = openProductModal;
 window.closeModal = closeModal;
 window.resetAllFilters = resetAllFilters;
 window.addToCart = addToCart;
 window.updateCartQty = updateCartQty;
-window.closeReceiptModal = closeReceiptModal;
+window.removeFromCart = removeFromCart;
+window.openCart = openCart;
+window.closeCart = closeCart;
+window.closeReceipt = closeReceipt;
