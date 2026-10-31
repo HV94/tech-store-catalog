@@ -787,8 +787,20 @@ body {
 /* Card Action Buttons */
 .card-actions {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr 1.15fr;
   gap: 0.5rem;
+}
+
+.card-actions .btn {
+  padding: 0.55rem 0.65rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: var(--radius-md);
+  white-space: nowrap;
 }
 
 /* Modal Styles */
