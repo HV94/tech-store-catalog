@@ -8,7 +8,7 @@
  * - Catalogo 20 referenze hardware IT con immagini fotografiche ad alta definizione
  * - Filtri per categoria, marca, offerte promozionali e disponibilità
  * - Scheda tecnica modale con specifiche complete e codice EAN
- * - Carrello cassa preventivi con calcolo IVA 22% e stampa scontrino (window.print)
+ * - Carrello cassa preventivi con calcolo IVA 4% e stampa scontrino (window.print)
  * ==============================================================================
  */
 
@@ -23,8 +23,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'laptop',
     categoriaNome: 'Notebook & PC',
     marca: 'Apple',
-    prezzo: 1099.00,
-    prezzoListino: 1249.00,
+    prezzo: 749.00,
+    prezzoListino: 899.00,
     pezzi: 12,
     ean: '194253131001',
     specifiche: 'Chip Apple M2 (8 CPU / 8 GPU), 8GB RAM Unificata, SSD 256GB, Display Liquid Retina 13.6", Autonomia 18h.',
@@ -37,8 +37,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'laptop',
     categoriaNome: 'Notebook & PC',
     marca: 'Lenovo',
-    prezzo: 1290.00,
-    prezzoListino: 1450.00,
+    prezzo: 649.00,
+    prezzoListino: 799.00,
     pezzi: 8,
     ean: '019680345678',
     specifiche: 'Intel Core i7-1355U, 16GB RAM DDR5, SSD 512GB NVMe PCIe 4.0, Display 14" IPS FHD+ 400 nits, Windows 11 Pro.',
@@ -51,8 +51,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'laptop',
     categoriaNome: 'Notebook & PC',
     marca: 'Dell',
-    prezzo: 1499.00,
-    prezzoListino: 1699.00,
+    prezzo: 799.00,
+    prezzoListino: 950.00,
     pezzi: 6,
     ean: '539718471209',
     specifiche: 'Intel Core i7-1360P, 32GB LPDDR5, SSD 1TB NVMe, Schermo 13.4" OLED 3.5K Touch, Chassis Alluminio CNC.',
@@ -65,8 +65,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'laptop',
     categoriaNome: 'Notebook & PC',
     marca: 'ASUS',
-    prezzo: 1899.00,
-    prezzoListino: 2199.00,
+    prezzo: 949.00,
+    prezzoListino: 1199.00,
     pezzi: 5,
     ean: '471138709123',
     specifiche: 'Intel Core Ultra 9 185H, NVIDIA RTX 4070 8GB GDDR6, 32GB RAM DDR5, SSD 1TB, Display 16" OLED 240Hz ROG Nebula.',
@@ -81,8 +81,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'smartphone',
     categoriaNome: 'Smartphone & Tablet',
     marca: 'Apple',
-    prezzo: 1129.00,
-    prezzoListino: 1239.00,
+    prezzo: 699.00,
+    prezzoListino: 829.00,
     pezzi: 15,
     ean: '195949038291',
     specifiche: 'Chip A17 Pro (3nm), Design in Titanio Grado 5, Fotocamera principale 48MP con teleobiettivo 3x, Porta USB-C 3.0.',
@@ -95,8 +95,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'smartphone',
     categoriaNome: 'Smartphone & Tablet',
     marca: 'Samsung',
-    prezzo: 1299.00,
-    prezzoListino: 1499.00,
+    prezzo: 749.00,
+    prezzoListino: 899.00,
     pezzi: 10,
     ean: '880609532187',
     specifiche: 'Snapdragon 8 Gen 3 for Galaxy, 12GB RAM, Display Dynamic AMOLED 2X 6.8" 120Hz antiriflesso, Fotocamera 200MP, S Pen.',
@@ -109,8 +109,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'smartphone',
     categoriaNome: 'Smartphone & Tablet',
     marca: 'Google',
-    prezzo: 899.00,
-    prezzoListino: 1099.00,
+    prezzo: 499.00,
+    prezzoListino: 599.00,
     pezzi: 8,
     ean: '084024470512',
     specifiche: 'Google Tensor G3 con chip Titan M2, Fotocamera tripla con zoom 30x, Display Super Actua 6.7" OLED 120Hz, 7 anni update.',
@@ -123,8 +123,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'smartphone',
     categoriaNome: 'Smartphone & Tablet',
     marca: 'Apple',
-    prezzo: 679.00,
-    prezzoListino: 719.00,
+    prezzo: 399.00,
+    prezzoListino: 469.00,
     pezzi: 14,
     ean: '195949392019',
     specifiche: 'Chip Apple M2, Display Liquid Retina 11" con True Tone e ampia gamma cromatica P3, supporto Apple Pencil Pro.',
@@ -139,8 +139,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'audio',
     categoriaNome: 'Audio & Smart TV',
     marca: 'Sony',
-    prezzo: 349.00,
-    prezzoListino: 420.00,
+    prezzo: 189.00,
+    prezzoListino: 249.00,
     pezzi: 16,
     ean: '454873613256',
     specifiche: 'Cancellazione attiva del rumore leader del settore con doppio processore V1/QN1, 8 microfoni, Autonomia 30h, Audio Hi-Res LDAC.',
@@ -153,8 +153,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'audio',
     categoriaNome: 'Audio & Smart TV',
     marca: 'Apple',
-    prezzo: 249.00,
-    prezzoListino: 279.00,
+    prezzo: 149.00,
+    prezzoListino: 189.00,
     pezzi: 25,
     ean: '195949052518',
     specifiche: 'Chip Apple H2, Cancellazione attiva del rumore raddoppiata, Audio Spaziale personalizzato, Custodia MagSafe USB-C.',
@@ -167,8 +167,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'audio',
     categoriaNome: 'Audio & Smart TV',
     marca: 'LG',
-    prezzo: 1199.00,
-    prezzoListino: 1599.00,
+    prezzo: 699.00,
+    prezzoListino: 899.00,
     pezzi: 4,
     ean: '880609172901',
     specifiche: 'Pannello OLED 4K con pixel autoilluminanti, Processore α9 Gen6 4K, 4 porte HDMI 2.1 (4K@120Hz, VRR, G-Sync), webOS 23.',
@@ -181,8 +181,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'audio',
     categoriaNome: 'Audio & Smart TV',
     marca: 'Bose',
-    prezzo: 399.00,
-    prezzoListino: 499.00,
+    prezzo: 219.00,
+    prezzoListino: 279.00,
     pezzi: 7,
     ean: '017817843219',
     specifiche: 'Audio Immersivo Bose con tracciamento spaziale della testa, Modalità Quiet/Aware, 24 ore di autonomia, cuscinetti in pelle sintetica.',
@@ -197,8 +197,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'gaming',
     categoriaNome: 'Componenti & Gaming',
     marca: 'NVIDIA',
-    prezzo: 649.00,
-    prezzoListino: 699.00,
+    prezzo: 389.00,
+    prezzoListino: 449.00,
     pezzi: 6,
     ean: '083516800341',
     specifiche: 'Architettura Ada Lovelace, 12GB GDDR6X su bus 192-bit, DLSS 3.5 con Frame Generation, Ray Tracing di 3ª generazione.',
@@ -211,8 +211,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'gaming',
     categoriaNome: 'Componenti & Gaming',
     marca: 'AMD',
-    prezzo: 399.00,
-    prezzoListino: 469.00,
+    prezzo: 239.00,
+    prezzoListino: 299.00,
     pezzi: 11,
     ean: '073014331493',
     specifiche: '8 Core / 16 Thread su socket AM5, 96MB 3D V-Cache (104MB cache totale), Boost fino a 5.0 GHz, TDP 120W, PCIe 5.0.',
@@ -225,8 +225,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'gaming',
     categoriaNome: 'Componenti & Gaming',
     marca: 'Samsung',
-    prezzo: 179.00,
-    prezzoListino: 219.00,
+    prezzo: 99.00,
+    prezzoListino: 129.00,
     pezzi: 18,
     ean: '880609439210',
     specifiche: 'Lettura sequenziale fino a 7.450 MB/s, scrittura fino a 6.900 MB/s, fattore di forma M.2 2280, controller Pascal, garanzia 5 anni.',
@@ -239,8 +239,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'gaming',
     categoriaNome: 'Componenti & Gaming',
     marca: 'Corsair',
-    prezzo: 129.00,
-    prezzoListino: 149.00,
+    prezzo: 69.00,
+    prezzoListino: 89.00,
     pezzi: 14,
     ean: '084000669988',
     specifiche: 'Frequenza 6000MHz, Latenza CL30, Supporto profili Intel XMP 3.0 e AMD EXPO, Dissipatore in alluminio con barra LED RGB.',
@@ -255,8 +255,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'accessori',
     categoriaNome: 'Monitor & Accessori',
     marca: 'Dell',
-    prezzo: 579.00,
-    prezzoListino: 689.00,
+    prezzo: 299.00,
+    prezzoListino: 379.00,
     pezzi: 5,
     ean: '539718465689',
     specifiche: 'Pannello IPS Black con contrasto 2000:1, Risoluzione 4K UHD (3840x2160), 98% DCI-P3, Hub USB-C con Power Delivery 90W e porta RJ45.',
@@ -269,8 +269,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'accessori',
     categoriaNome: 'Monitor & Accessori',
     marca: 'Logitech',
-    prezzo: 99.00,
-    prezzoListino: 129.00,
+    prezzo: 59.00,
+    prezzoListino: 79.00,
     pezzi: 22,
     ean: '509920610373',
     specifiche: 'Sensore ottico Darkfield 8000 DPI utilizzabile anche su vetro, Scorrimento elettromagnetico MagSpeed, Clic silenziosi (-90% rumore).',
@@ -283,8 +283,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'accessori',
     categoriaNome: 'Monitor & Accessori',
     marca: 'Keychron',
-    prezzo: 119.00,
-    prezzoListino: 139.00,
+    prezzo: 69.00,
+    prezzoListino: 89.00,
     pezzi: 9,
     ean: '489524882194',
     specifiche: 'Layout 75%, Switch Meccanici Hot-swap Keychron K Pro Red, Connessione Bluetooth 5.1 e cavo Type-C, Compatibile Mac & Windows.',
@@ -297,8 +297,8 @@ const CATALOGO_HARDWARE = [
     categoria: 'accessori',
     categoriaNome: 'Monitor & Accessori',
     marca: 'CalDigit',
-    prezzo: 399.00,
-    prezzoListino: 449.00,
+    prezzo: 199.00,
+    prezzoListino: 249.00,
     pezzi: 4,
     ean: '085002258901',
     specifiche: '18 Porte di espansione: 3x Thunderbolt 4, 5x USB-A 3.2, 3x USB-C 10Gbps, DisplayPort 1.4, Ethernet 2.5GbE, Power Delivery fino a 98W.',
@@ -646,7 +646,7 @@ function openProductModal(id) {
 
     <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
       <div>
-        <div style="font-size: 0.75rem; color: #94a3b8;">Prezzo al pubblico (IVA 22% incl.):</div>
+        <div style="font-size: 0.75rem; color: #94a3b8;">Prezzo al pubblico (IVA 4% incl.):</div>
         <div style="font-size: 1.5rem; font-weight: 800; color: #34d399;">€ ${prodotto.prezzo.toFixed(2).replace('.', ',')}</div>
       </div>
       <button class="btn btn-primary" style="padding: 0.65rem 1.25rem; font-size: 0.9rem;" onclick="addToCart(${prodotto.id}); closeModal();">
@@ -749,7 +749,7 @@ function aggiornaCarrelloUI() {
 
   const totalePezzi = carrello.reduce((acc, i) => acc + i.quantita, 0);
   const totaleLordo = carrello.reduce((acc, i) => acc + (i.prezzo * i.quantita), 0);
-  const imponibile = totaleLordo / 1.22;
+  const imponibile = totaleLordo / 1.04;
   const iva = totaleLordo - imponibile;
 
   if (countBadge) {
@@ -821,7 +821,7 @@ function completaVendita() {
   }
 
   const totaleLordo = carrello.reduce((acc, i) => acc + (i.prezzo * i.quantita), 0);
-  const imponibile = totaleLordo / 1.22;
+  const imponibile = totaleLordo / 1.04;
   const iva = totaleLordo - imponibile;
 
   const cashInput = document.getElementById('cashReceivedInput');
