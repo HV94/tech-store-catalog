@@ -231,7 +231,7 @@ const CATALOGO_HARDWARE = [
     ean: '880609439210',
     specifiche: 'Lettura sequenziale fino a 7.450 MB/s, scrittura fino a 6.900 MB/s, fattore di forma M.2 2280, controller Pascal, garanzia 5 anni.',
     icona: '💽',
-    immagine: 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?auto=format&fit=crop&w=600&q=80'
+    immagine: 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=600&q=80'
   },
   {
     id: 16,
@@ -275,7 +275,7 @@ const CATALOGO_HARDWARE = [
     ean: '509920610373',
     specifiche: 'Sensore ottico Darkfield 8000 DPI utilizzabile anche su vetro, Scorrimento elettromagnetico MagSpeed, Clic silenziosi (-90% rumore).',
     icona: '🖱️',
-    immagine: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=600&q=80'
+    immagine: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=600&q=80'
   },
   {
     id: 19,
