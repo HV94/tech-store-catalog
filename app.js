@@ -311,6 +311,7 @@ const CATALOGO_HARDWARE = [
 // 2. STATO APPLICAZIONE (Filtri & Carrello Cassa)
 // ------------------------------------------------------------------------------
 let carrello = [];
+let metodoPagamento = 'cash';
 let filtroCategoria = 'all';
 let filtroRicerca = '';
 let filtroMarca = 'all';
@@ -415,14 +416,94 @@ function inizializzaFiltri() {
 
 function inizializzaCarrello() {
   const openCartBtn = document.getElementById('btn-open-cart');
-  const closeCartBtn = document.getElementById('drawer-close-btn');
-  const overlay = document.getElementById('cart-drawer-overlay');
-  const clearCartBtn = document.getElementById('btn-clear-cart');
+  const closeCartBtn = document.getElementById('closeCartBtn');
+  const overlay = document.getElementById('cartOverlay');
+  const clearCartBtn = document.getElementById('clearCartBtn');
+  const checkoutBtn = document.getElementById('checkoutBtn');
 
   if (openCartBtn) openCartBtn.addEventListener('click', openCart);
   if (closeCartBtn) closeCartBtn.addEventListener('click', closeCart);
   if (overlay) overlay.addEventListener('click', closeCart);
   if (clearCartBtn) clearCartBtn.addEventListener('click', clearCart);
+  if (checkoutBtn) checkoutBtn.addEventListener('click', completaVendita);
+
+  // Metodi di Pagamento Cassa (Contanti / POS)
+  const payMethodCash = document.getElementById('payMethodCash');
+  const payMethodPos = document.getElementById('payMethodPos');
+  const cashBox = document.getElementById('cashPaymentBox');
+  const posBox = document.getElementById('posPaymentBox');
+
+  if (payMethodCash && payMethodPos) {
+    payMethodCash.addEventListener('click', () => {
+      metodoPagamento = 'cash';
+      payMethodCash.classList.add('active');
+      payMethodPos.classList.remove('active');
+      if (cashBox) cashBox.classList.remove('hidden');
+      if (posBox) posBox.classList.add('hidden');
+    });
+
+    payMethodPos.addEventListener('click', () => {
+      metodoPagamento = 'pos';
+      payMethodPos.classList.add('active');
+      payMethodCash.classList.remove('active');
+      if (cashBox) cashBox.classList.add('hidden');
+      if (posBox) posBox.classList.remove('hidden');
+    });
+  }
+
+  // Calcolo Resto Contanti in Tempo Reale
+  const cashInput = document.getElementById('cashReceivedInput');
+  if (cashInput) {
+    cashInput.addEventListener('input', calcolaResto);
+  }
+
+  const cashExactBtn = document.getElementById('cashExactBtn');
+  if (cashExactBtn) {
+    cashExactBtn.addEventListener('click', () => {
+      const totaleLordo = carrello.reduce((acc, i) => acc + (i.prezzo * i.quantita), 0);
+      if (cashInput) {
+        cashInput.value = totaleLordo.toFixed(2);
+        calcolaResto();
+      }
+    });
+  }
+
+  const quickBtns = document.querySelectorAll('.btn-cash-quick[data-amount]');
+  quickBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const extra = parseFloat(btn.getAttribute('data-amount')) || 0;
+      const current = parseFloat(cashInput?.value) || 0;
+      if (cashInput) {
+        cashInput.value = (current + extra).toFixed(2);
+        calcolaResto();
+      }
+    });
+  });
+
+  // Simulazione Contactless POS
+  const posSimulateBtn = document.getElementById('posSimulateBtn');
+  const posStatusText = document.getElementById('posStatusText');
+  if (posSimulateBtn && posStatusText) {
+    posSimulateBtn.addEventListener('click', () => {
+      posStatusText.textContent = 'Transazione POS Approvata! Codice Auth #94821';
+      posStatusText.style.color = '#34d399';
+    });
+  }
+
+  // Chiusura e Stampa Scontrino
+  const closeReceiptBtn = document.getElementById('closeReceiptBtn');
+  const receiptOverlay = document.getElementById('receiptOverlay');
+  const printReceiptBtn = document.getElementById('printReceiptBtn');
+  const downloadPdfReceiptBtn = document.getElementById('downloadPdfReceiptBtn');
+
+  if (closeReceiptBtn) closeReceiptBtn.addEventListener('click', chiudiScontrino);
+  if (receiptOverlay) receiptOverlay.addEventListener('click', chiudiScontrino);
+  if (printReceiptBtn) {
+    printReceiptBtn.addEventListener('click', () => window.print());
+  }
+  if (downloadPdfReceiptBtn) {
+    downloadPdfReceiptBtn.addEventListener('click', () => window.print());
+  }
 }
 
 // ------------------------------------------------------------------------------
@@ -583,7 +664,7 @@ function closeModal() {
 }
 
 // ------------------------------------------------------------------------------
-// 6. GESTIONE CARRELLO & PREVENTIVO CASSA
+// 6. GESTIONE CARRELLO & PREVENTIVO CASSA POS
 // ------------------------------------------------------------------------------
 function addToCart(id) {
   const prodotto = CATALOGO_HARDWARE.find(p => p.id === id);
@@ -644,64 +725,186 @@ function clearCart() {
   }
 }
 
+function calcolaResto() {
+  const cashInput = document.getElementById('cashReceivedInput');
+  const changeDueValue = document.getElementById('changeDueValue');
+  if (!changeDueValue) return;
+
+  const totaleLordo = carrello.reduce((acc, i) => acc + (i.prezzo * i.quantita), 0);
+  const ricevuto = cashInput ? (parseFloat(cashInput.value) || 0) : 0;
+  const resto = Math.max(0, ricevuto - totaleLordo);
+  changeDueValue.textContent = `€ ${resto.toFixed(2).replace('.', ',')}`;
+}
+
 function aggiornaCarrelloUI() {
-  const countBadge = document.getElementById('cart-badge-count');
-  const itemsContainer = document.getElementById('cart-items-container');
-  const subtotalEl = document.getElementById('cart-subtotal');
-  const ivaEl = document.getElementById('cart-iva');
-  const totalEl = document.getElementById('cart-total');
+  const countBadge = document.getElementById('cartCountBadge');
+  const emptyState = document.getElementById('cartEmptyState');
+  const itemsList = document.getElementById('cartItemsList');
+  const footer = document.getElementById('cartDrawerFooter');
+
+  const subtotalEl = document.getElementById('cartSubtotal');
+  const ivaEl = document.getElementById('cartIva');
+  const totalItemsEl = document.getElementById('cartTotalItems');
+  const grandTotalEl = document.getElementById('cartGrandTotal');
 
   const totalePezzi = carrello.reduce((acc, i) => acc + i.quantita, 0);
   const totaleLordo = carrello.reduce((acc, i) => acc + (i.prezzo * i.quantita), 0);
   const imponibile = totaleLordo / 1.22;
   const iva = totaleLordo - imponibile;
 
-  if (countBadge) countBadge.textContent = totalePezzi;
-
-  if (itemsContainer) {
-    if (carrello.length === 0) {
-      itemsContainer.innerHTML = `
-        <div style="padding: 2.5rem 1rem; text-align: center; color: #94a3b8;">
-          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🛒</div>
-          <p>Il carrello è vuoto.</p>
-          <span style="font-size: 0.8rem;">Seleziona i prodotti dal catalogo per creare un preventivo.</span>
-        </div>
-      `;
+  if (countBadge) {
+    if (totalePezzi > 0) {
+      countBadge.style.display = 'inline-block';
+      countBadge.textContent = totalePezzi;
     } else {
-      itemsContainer.innerHTML = carrello.map(item => `
-        <div class="cart-item" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.08); gap: 0.5rem;">
-          <div style="flex: 1; min-width: 0;">
-            <div style="font-size: 0.85rem; font-weight: 600; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.nome}</div>
-            <div style="font-size: 0.75rem; color: #94a3b8;">€ ${item.prezzo.toFixed(2).replace('.', ',')} cad.</div>
-          </div>
-          <div style="display: flex; align-items: center; gap: 0.4rem;">
-            <button class="qty-btn" onclick="updateCartQuantity(${item.id}, -1)" style="width: 26px; height: 26px; border-radius: 6px; background: rgba(255,255,255,0.1); color: #fff; border: none; font-size: 0.9rem; cursor: pointer;">-</button>
-            <span style="font-weight: 700; font-size: 0.85rem; min-width: 18px; text-align: center;">${item.quantita}</span>
-            <button class="qty-btn" onclick="updateCartQuantity(${item.id}, 1)" style="width: 26px; height: 26px; border-radius: 6px; background: rgba(255,255,255,0.1); color: #fff; border: none; font-size: 0.9rem; cursor: pointer;">+</button>
-            <button onclick="removeFromCart(${item.id})" title="Rimuovi" style="background: none; border: none; color: #f87171; font-size: 1.1rem; cursor: pointer; padding: 0 4px;">&times;</button>
-          </div>
-        </div>
-      `).join('');
+      countBadge.style.display = 'none';
     }
   }
 
+  if (carrello.length === 0) {
+    if (emptyState) emptyState.classList.remove('hidden');
+    if (itemsList) {
+      itemsList.classList.add('hidden');
+      itemsList.innerHTML = '';
+    }
+    if (footer) footer.classList.add('hidden');
+    return;
+  }
+
+  if (emptyState) emptyState.classList.add('hidden');
+  if (itemsList) {
+    itemsList.classList.remove('hidden');
+    itemsList.innerHTML = carrello.map(item => `
+      <div class="cart-item" style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.08); gap: 0.5rem;">
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-size: 0.88rem; font-weight: 600; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.nome}</div>
+          <div style="font-size: 0.78rem; color: #94a3b8;">€ ${item.prezzo.toFixed(2).replace('.', ',')} cad.</div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.4rem;">
+          <button class="qty-btn" onclick="updateCartQuantity(${item.id}, -1)" style="width: 26px; height: 26px; border-radius: 6px; background: rgba(255,255,255,0.1); color: #fff; border: none; font-size: 0.9rem; cursor: pointer;">-</button>
+          <span style="font-weight: 700; font-size: 0.85rem; min-width: 18px; text-align: center;">${item.quantita}</span>
+          <button class="qty-btn" onclick="updateCartQuantity(${item.id}, 1)" style="width: 26px; height: 26px; border-radius: 6px; background: rgba(255,255,255,0.1); color: #fff; border: none; font-size: 0.9rem; cursor: pointer;">+</button>
+          <button onclick="removeFromCart(${item.id})" title="Rimuovi" style="background: none; border: none; color: #f87171; font-size: 1.1rem; cursor: pointer; padding: 0 4px;">&times;</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  if (footer) footer.classList.remove('hidden');
+
+  if (totalItemsEl) totalItemsEl.textContent = `${totalePezzi} pezzi`;
   if (subtotalEl) subtotalEl.textContent = `€ ${imponibile.toFixed(2).replace('.', ',')}`;
   if (ivaEl) ivaEl.textContent = `€ ${iva.toFixed(2).replace('.', ',')}`;
-  if (totalEl) totalEl.textContent = `€ ${totaleLordo.toFixed(2).replace('.', ',')}`;
+  if (grandTotalEl) grandTotalEl.textContent = `€ ${totaleLordo.toFixed(2).replace('.', ',')}`;
+
+  calcolaResto();
 }
 
 function openCart() {
-  const drawer = document.getElementById('cart-drawer');
-  const overlay = document.getElementById('cart-drawer-overlay');
+  const drawer = document.getElementById('cartDrawer');
+  const overlay = document.getElementById('cartOverlay');
   if (drawer) drawer.classList.add('open');
   if (overlay) overlay.classList.add('open');
 }
 
 function closeCart() {
-  const drawer = document.getElementById('cart-drawer');
-  const overlay = document.getElementById('cart-drawer-overlay');
+  const drawer = document.getElementById('cartDrawer');
+  const overlay = document.getElementById('cartOverlay');
   if (drawer) drawer.classList.remove('open');
   if (overlay) overlay.classList.remove('open');
+}
+
+function completaVendita() {
+  if (carrello.length === 0) {
+    alert('Il carrello cassa è vuoto. Aggiungi almeno un articolo prima di completare la vendita.');
+    return;
+  }
+
+  const totaleLordo = carrello.reduce((acc, i) => acc + (i.prezzo * i.quantita), 0);
+  const imponibile = totaleLordo / 1.22;
+  const iva = totaleLordo - imponibile;
+
+  const cashInput = document.getElementById('cashReceivedInput');
+  const ricevuto = metodoPagamento === 'cash' ? (parseFloat(cashInput?.value) || totaleLordo) : totaleLordo;
+  const resto = Math.max(0, ricevuto - totaleLordo);
+
+  // 1. Scala le quantità vendute dal magazzino
+  carrello.forEach(cartItem => {
+    const prod = CATALOGO_HARDWARE.find(p => p.id === cartItem.id);
+    if (prod) {
+      prod.pezzi = Math.max(0, prod.pezzi - cartItem.quantita);
+    }
+  });
+
+  // 2. Popola data, ora e codice documento nello scontrino
+  const adesso = new Date();
+  const dataStr = adesso.toLocaleDateString('it-IT') + ' - ' + adesso.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+  const docIdStr = 'DOC #TS-' + Math.floor(10000 + Math.random() * 90000);
+
+  const receiptDateEl = document.getElementById('receiptDate');
+  const receiptDocIdEl = document.getElementById('receiptDocId');
+  if (receiptDateEl) receiptDateEl.textContent = dataStr;
+  if (receiptDocIdEl) receiptDocIdEl.textContent = docIdStr;
+
+  // 3. Popola le righe dei prodotti nello scontrino
+  const itemsContainer = document.getElementById('receiptItemsContainer');
+  if (itemsContainer) {
+    itemsContainer.innerHTML = carrello.map(item => `
+      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.3rem;">
+        <span style="font-weight: 600;">${item.quantita}x ${item.nome.substring(0, 24)}</span>
+        <span>€ ${(item.prezzo * item.quantita).toFixed(2).replace('.', ',')}</span>
+      </div>
+    `).join('');
+  }
+
+  // 4. Popola i totali e il metodo di pagamento
+  const recSubtotal = document.getElementById('receiptSubtotalAmount');
+  const recIva = document.getElementById('receiptIvaAmount');
+  const recTotal = document.getElementById('receiptTotalAmount');
+  const recPayType = document.getElementById('receiptPaymentType');
+  const recCashRow = document.getElementById('receiptCashRow');
+  const recCashReceived = document.getElementById('receiptCashReceived');
+  const recChangeRow = document.getElementById('receiptChangeRow');
+  const recChangeAmount = document.getElementById('receiptChangeAmount');
+  const recPosRow = document.getElementById('receiptPosRow');
+
+  if (recSubtotal) recSubtotal.textContent = `€ ${imponibile.toFixed(2).replace('.', ',')}`;
+  if (recIva) recIva.textContent = `€ ${iva.toFixed(2).replace('.', ',')}`;
+  if (recTotal) recTotal.textContent = `€ ${totaleLordo.toFixed(2).replace('.', ',')}`;
+  if (recPayType) recPayType.textContent = metodoPagamento === 'cash' ? 'CONTANTI' : 'CARTA / POS';
+
+  if (metodoPagamento === 'cash') {
+    if (recCashRow) recCashRow.style.display = 'flex';
+    if (recChangeRow) recChangeRow.style.display = 'flex';
+    if (recCashReceived) recCashReceived.textContent = `€ ${ricevuto.toFixed(2).replace('.', ',')}`;
+    if (recChangeAmount) recChangeAmount.textContent = `€ ${resto.toFixed(2).replace('.', ',')}`;
+    if (recPosRow) recPosRow.style.display = 'none';
+  } else {
+    if (recCashRow) recCashRow.style.display = 'none';
+    if (recChangeRow) recChangeRow.style.display = 'none';
+    if (recPosRow) recPosRow.style.display = 'flex';
+  }
+
+  // 5. Chiudi carrello drawer e apri modale scontrino
+  closeCart();
+  const receiptModal = document.getElementById('receiptModal');
+  if (receiptModal) receiptModal.classList.remove('hidden');
+}
+
+function chiudiScontrino() {
+  const receiptModal = document.getElementById('receiptModal');
+  if (receiptModal) receiptModal.classList.add('hidden');
+
+  // Svuota la cassa per la prossima vendita
+  carrello = [];
+  const cashInput = document.getElementById('cashReceivedInput');
+  if (cashInput) cashInput.value = '';
+  const changeDueValue = document.getElementById('changeDueValue');
+  if (changeDueValue) changeDueValue.textContent = '€ 0.00';
+
+  aggiornaCarrelloUI();
+  aggiornaStatistiche();
+  renderCatalogo();
 }
 
 function aggiornaStatistiche() {
