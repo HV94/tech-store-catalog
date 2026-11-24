@@ -1228,6 +1228,11 @@ body {
     border-radius: 14px !important;
   }
 
+  .product-image-container {
+    height: 125px !important;
+    padding: 6px !important;
+  }
+
   .product-card h3 {
     font-size: 0.8rem !important;
     line-height: 1.25 !important;
