@@ -3,21 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TechStore - Catalogo Prodotti & Gestione Inventario | Valentyn Haidukov</title>
+  <title>Catalogo Hardware IT & Preventivi Cassa - Valentyn Haidukov</title>
   
   <!-- OpenGraph Metadata per LinkedIn, WhatsApp e Social -->
-  <meta property="og:title" content="TechStore - Catalogo & Gestione Inventario Elettronica">
-  <meta property="og:description" content="Gestionale catalogo retail per elettronica di consumo, specifiche tecniche e preventivi rapido. Sviluppato da Valentyn Haidukov.">
+  <meta property="og:title" content="Catalogo Hardware IT & Preventivi Cassa">
+  <meta property="og:description" content="Catalogo componenti e dispositivi informatici, schede tecniche dettagliate e calcolo preventivi cassa. Sviluppato da Valentyn Haidukov.">
   <meta property="og:image" content="https://hv94.github.io/tech-store-catalog/anteprima.png">
   <meta property="og:url" content="https://hv94.github.io/tech-store-catalog/">
   <meta property="og:type" content="website">
 
   <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css?v=6.1">
 </head>
 <body>
 
@@ -25,8 +33,8 @@
   <aside class="top-bar" aria-label="Informazioni sviluppatore">
     <div class="container top-bar-content">
       <div class="top-bar-left">
-        <span class="badge-role">Progetto Portfolio Retail & IT</span>
-        <span>Sviluppato da <strong>Valentyn Haidukov</strong> &bull; Perito Informatico (76/100)</span>
+        <span class="badge-role">Esercitazione Hardware IT & Cassa</span>
+        <span>Sviluppato da <strong>Valentyn Haidukov</strong> &bull; Perito Informatico (76/100) &bull; Categorie Protette (L. 68/99)</span>
       </div>
       <div class="top-bar-right">
         <a href="https://www.linkedin.com/in/valentyn-haidukov" target="_blank" rel="noopener noreferrer" class="link-social">
@@ -53,8 +61,8 @@
           </svg>
         </div>
         <div class="brand-text">
-          <h1>TechStore<span>Manager</span></h1>
-          <p>Catalogo Elettronica & POS Preventivi</p>
+          <h1>Catalogo Hardware IT</h1>
+          <p>Specifiche Tecniche & Preventivi Cassa</p>
         </div>
       </div>
 
@@ -62,27 +70,27 @@
       <div class="header-metrics">
         <div class="metric-chip">
           <span class="metric-label">Articoli Attivi</span>
-          <span class="metric-value" id="stat-total-count">0</span>
+          <span class="metric-value" id="stat-total-count">60</span>
         </div>
         <div class="metric-chip">
           <span class="metric-label">Disponibili Subito</span>
-          <span class="metric-value text-success" id="stat-instock-count">0</span>
+          <span class="metric-value text-success" id="stat-instock-count">58</span>
         </div>
         <div class="metric-chip hide-mobile">
           <span class="metric-label">Offerte Volantino</span>
-          <span class="metric-value text-accent" id="stat-promo-count">0</span>
+          <span class="metric-value text-accent" id="stat-promo-count">36</span>
         </div>
       </div>
 
-      <!-- Cart / Quote Button -->
+      <!-- Cart / Cassa POS Button (Identico a BiblioTech) -->
       <div class="nav-actions">
-        <button class="btn btn-primary" id="btn-open-cart">
+        <button class="btn btn-primary" id="btn-open-cart" onclick="openCart()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
           </svg>
-          <span>Preventivo Cassa</span>
-          <span class="cart-badge" id="cart-badge-count">0</span>
+          <span>🛒 Cassa / Preventivo</span>
+          <span class="cart-badge" id="cartCountBadge" style="display: none;">0</span>
         </button>
       </div>
     </div>
@@ -110,15 +118,16 @@
           </div>
         </div>
 
-        <!-- Category Selector -->
+        <!-- Category Selector (60 prodotti distribuiti in 5 reparti) -->
         <div class="filter-group">
           <label>Reparto / Categoria</label>
           <div class="category-pills" id="category-pills">
-            <button class="cat-pill active" data-category="all">Tutti i Reparti</button>
-            <button class="cat-pill" data-category="laptop">Notebook & PC</button>
-            <button class="cat-pill" data-category="smartphone">Smartphone & Tablet</button>
-            <button class="cat-pill" data-category="audio">Audio & Smart TV</button>
-            <button class="cat-pill" data-category="accessori">Accessori & Gaming</button>
+            <button class="cat-pill active" data-category="all">Tutti i Reparti (60)</button>
+            <button class="cat-pill" data-category="laptop">Notebook & PC (12)</button>
+            <button class="cat-pill" data-category="smartphone">Smartphone & Tablet (12)</button>
+            <button class="cat-pill" data-category="audio">Audio & Smart TV (12)</button>
+            <button class="cat-pill" data-category="gaming">Componenti & Gaming (12)</button>
+            <button class="cat-pill" data-category="accessori">Monitor & Accessori (12)</button>
           </div>
         </div>
 
@@ -127,13 +136,6 @@
           <label for="brand-select">Marca / Produttore</label>
           <select id="brand-select" class="form-select">
             <option value="all">Tutti i Marchi</option>
-            <option value="Apple">Apple</option>
-            <option value="Samsung">Samsung</option>
-            <option value="Lenovo">Lenovo</option>
-            <option value="ASUS">ASUS</option>
-            <option value="Sony">Sony</option>
-            <option value="Xiaomi">Xiaomi</option>
-            <option value="Logitech">Logitech</option>
           </select>
         </div>
 
@@ -163,7 +165,7 @@
           </label>
         </div>
 
-        <!-- Skills highlight box for recruiters -->
+        <!-- Recruiter Box -->
         <div class="recruiter-box">
           <div class="recruiter-box-title">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -174,8 +176,8 @@
           <ul class="recruiter-list">
             <li>Catalogazione hardware & specifiche</li>
             <li>Lettura codici EAN & barcode cassa</li>
-            <li>Calcolo sconti IVA & preventivazione</li>
-            <li>Consulenza tecnica su misura per il cliente</li>
+            <li>Calcolo sconti IVA 22% & preventivi</li>
+            <li>Consulenza tecnica guidata per il cliente</li>
           </ul>
         </div>
       </div>
@@ -183,14 +185,13 @@
 
     <!-- Main Catalog View -->
     <section class="catalog-section">
-      <!-- Section Header -->
       <div class="catalog-header">
         <div class="catalog-header-info">
           <h2 id="catalog-title">Tutti i Prodotti</h2>
-          <span class="results-count" id="results-count">12 articoli visualizzati</span>
+          <span class="results-count" id="results-count">60 articoli visualizzati</span>
         </div>
         <div class="view-toggles">
-          <span class="tag-status">Pronto per Cassa Touch & Barcode</span>
+          <span class="tag-status">Cassa POS Touch & Scorporo IVA 22%</span>
         </div>
       </div>
 
@@ -220,64 +221,225 @@
     </div>
   </div>
 
-  <!-- Drawer Preventivo / Cassa -->
-  <div class="drawer-overlay" id="cart-drawer-overlay"></div>
-  <aside class="cart-drawer" id="cart-drawer">
-    <div class="drawer-header">
-      <div class="drawer-title">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-        </svg>
-        <h3>Preventivo & Carrello Cassa</h3>
+  <!-- =========================================================================
+       CASSA DRAWER & CHECKOUT POS (STRUTTURA IDENTICA A BIBLIOTECH)
+       ========================================================================= -->
+  <div id="cartOverlay" class="cart-overlay" onclick="closeCart()"></div>
+  <aside id="cartDrawer" class="cart-drawer" aria-label="Cassa vendite e carrello">
+    <div class="cart-drawer-header">
+      <div class="cart-drawer-title">
+        <span class="cart-icon">🛒</span>
+        <div>
+          <h3>Cassa & Registratore POS</h3>
+          <p class="cart-subtitle">Punto Vendita Hardware IT</p>
+        </div>
       </div>
-      <button class="btn-icon" id="drawer-close-btn">&times;</button>
+      <button id="closeCartBtn" class="close-btn" title="Chiudi cassa" onclick="closeCart()">&times;</button>
     </div>
 
-    <div class="drawer-content" id="cart-items-container">
-      <!-- Carrello elementi -->
+    <div class="cart-drawer-body">
+      <!-- Stato Carrello Vuoto -->
+      <div id="cartEmptyState" class="cart-empty-state">
+        <div class="cart-empty-icon">🛒</div>
+        <h4>La cassa è vuota</h4>
+        <p>Aggiungi uno o più articoli dal catalogo per avviare una vendita al banco o emettere un preventivo.</p>
+      </div>
+
+      <!-- Elenco Articoli nel Carrello -->
+      <div id="cartItemsList" class="cart-items-list hidden">
+        <!-- Generato dinamicamente via JS -->
+      </div>
     </div>
 
-    <div class="drawer-footer">
-      <div class="summary-line">
-        <span>Subtotale (Imponibile):</span>
-        <strong id="cart-subtotal">€ 0,00</strong>
-      </div>
-      <div class="summary-line">
-        <span>IVA (22%):</span>
-        <strong id="cart-iva">€ 0,00</strong>
-      </div>
-      <div class="summary-line total-line">
-        <span>Totale Preventivo:</span>
-        <strong id="cart-total">€ 0,00</strong>
+    <!-- Footer Cassa & Pagamento -->
+    <div id="cartDrawerFooter" class="cart-drawer-footer hidden">
+      <div class="cart-totals">
+        <div class="cart-total-row">
+          <span>Articoli totali:</span>
+          <strong id="cartTotalItems">0 pezzi</strong>
+        </div>
+        <div class="cart-total-row">
+          <span>Subtotale Imponibile:</span>
+          <span id="cartSubtotal">€ 0.00</span>
+        </div>
+        <div class="cart-total-row">
+          <span>IVA Ordinaria (22% scorporo):</span>
+          <span id="cartIva">€ 0.00</span>
+        </div>
+        <div class="cart-total-row grand-total">
+          <span>TOTALE DA PAGARE:</span>
+          <strong id="cartGrandTotal">€ 0.00</strong>
+        </div>
       </div>
 
-      <div class="drawer-actions">
-        <button class="btn btn-success btn-block" onclick="window.print()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="6 9 6 2 18 2 18 9"/>
-            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
-            <rect x="6" y="14" width="12" height="8"/>
-          </svg>
-          Stampa Scheda Preventivo
+      <!-- Scelta Metodo di Pagamento -->
+      <div class="payment-method-section">
+        <label class="section-label">Metodo di Pagamento:</label>
+        <div class="payment-options">
+          <button type="button" class="payment-opt-btn active" id="payMethodCash" data-method="cash">
+            💵 Contanti
+          </button>
+          <button type="button" class="payment-opt-btn" id="payMethodPos" data-method="pos">
+            💳 POS / Carta
+          </button>
+        </div>
+
+        <!-- Sezione Contanti con Calcolo Resto -->
+        <div id="cashPaymentBox" class="payment-details-box">
+          <label for="cashReceivedInput">Contante ricevuto dal cliente (€):</label>
+          <div class="cash-input-row">
+            <span class="currency-prefix">€</span>
+            <input type="number" id="cashReceivedInput" step="0.50" min="0" placeholder="Es. 1000.00">
+          </div>
+          <div class="cash-quick-btns">
+            <button type="button" class="btn-cash-quick" id="cashExactBtn">Esatto</button>
+            <button type="button" class="btn-cash-quick" data-amount="10">+10 €</button>
+            <button type="button" class="btn-cash-quick" data-amount="20">+20 €</button>
+            <button type="button" class="btn-cash-quick" data-amount="50">+50 €</button>
+            <button type="button" class="btn-cash-quick" data-amount="100">+100 €</button>
+          </div>
+          <div id="changeDueBox" class="change-box info">
+            <span>Resto dovuto al cliente:</span>
+            <strong id="changeDueValue">€ 0.00</strong>
+          </div>
+        </div>
+
+        <!-- Sezione POS Elettronico -->
+        <div id="posPaymentBox" class="payment-details-box hidden">
+          <div class="pos-status-box">
+            <div class="pos-terminal-icon">📟</div>
+            <div class="pos-terminal-info">
+              <div class="pos-status-text" id="posStatusText">Pronto per inserimento carta o Contactless...</div>
+              <div class="pos-circuits">Circuito: Bancomat &bull; Visa &bull; Mastercard &bull; Apple Pay &bull; Google Pay</div>
+            </div>
+          </div>
+          <button type="button" id="posSimulateBtn" class="btn btn-pos-action">
+            📶 Avvicina Carta / Simula Transazione POS
+          </button>
+        </div>
+      </div>
+
+      <!-- Pulsanti Azioni Cassa -->
+      <div class="cart-actions-bottom">
+        <button id="checkoutBtn" class="btn btn-checkout">
+          ✅ Completa Vendita & Scarica Scorte
         </button>
-        <button class="btn btn-outline btn-block" id="btn-clear-cart">Svuota Carrello</button>
+        <button id="clearCartBtn" class="btn btn-clear-cart" title="Azzera cassa">
+          Svuota Cassa
+        </button>
       </div>
     </div>
   </aside>
 
-  <!-- Footer -->
+  <!-- =========================================================================
+       MODALE SCONTRINO FISCALE TERMICO (STRUTTURA IDENTICA A BIBLIOTECH)
+       ========================================================================= -->
+  <div id="receiptModal" class="modal hidden">
+    <div class="modal-overlay" id="receiptOverlay"></div>
+    <div class="modal-card receipt-modal-card">
+      <div class="receipt-paper" id="receiptPaper">
+        <div class="receipt-header">
+          <div class="receipt-logo">REPARTO HARDWARE IT</div>
+          <div class="receipt-store">Punto Vendita Elettronica, Informatica & Telefonia</div>
+          <div class="receipt-address">Via Vestina, 120 &bull; Città Sant'Angelo (PE)</div>
+          <div class="receipt-piva">P.IVA: IT09876543210 &bull; Tel. 085 9691234</div>
+          <div class="receipt-divider">================================</div>
+          <div class="receipt-meta">
+            <div>DOC. COMMERCIALE DI VENDITA / PREVENTIVO</div>
+            <div id="receiptDate">31/10/2026 - 12:00</div>
+            <div>OPERATORE: Valentyn Haidukov (Cassa 01)</div>
+            <div id="receiptDocId">DOC #TS-58291</div>
+          </div>
+          <div class="receipt-divider">--------------------------------</div>
+        </div>
+
+        <div class="receipt-items" id="receiptItemsContainer">
+          <!-- Righe scontrino generate via JS -->
+        </div>
+
+        <div class="receipt-totals">
+          <div class="receipt-divider">--------------------------------</div>
+          <div class="receipt-row">
+            <span>SUBTOTALE IMPONIBILE:</span>
+            <span id="receiptSubtotalAmount">€ 0.00</span>
+          </div>
+          <div class="receipt-row">
+            <span>IVA 22% (SCORPORO):</span>
+            <span id="receiptIvaAmount">€ 0.00</span>
+          </div>
+          <div class="receipt-row bold">
+            <span>TOTALE COMPLESSIVO:</span>
+            <span id="receiptTotalAmount">€ 0.00</span>
+          </div>
+          <div class="receipt-row" id="receiptPaymentRow">
+            <span>PAGAMENTO:</span>
+            <span id="receiptPaymentType">CONTANTI</span>
+          </div>
+          <div class="receipt-row" id="receiptCashRow">
+            <span>RICEVUTO:</span>
+            <span id="receiptCashReceived">€ 0.00</span>
+          </div>
+          <div class="receipt-row bold" id="receiptChangeRow">
+            <span>RESTO:</span>
+            <span id="receiptChangeAmount">€ 0.00</span>
+          </div>
+          <div class="receipt-row" id="receiptPosRow" style="display: none;">
+            <span>CODICE AUTH POS:</span>
+            <span id="receiptPosAuth">#TS-94821</span>
+          </div>
+          <div class="receipt-divider">================================</div>
+          <div class="receipt-vat-note">
+            Garanzia Legale di Conformità 24 Mesi (D.Lgs. 206/2005 - Codice del Consumo)<br>
+            Conserva il presente documento per l'assistenza tecnica hardware.
+          </div>
+          <div class="receipt-barcode">||||| ||||||| |||| |||||||| |||||</div>
+          <div class="receipt-thanks">GRAZIE PER LA VISITA!</div>
+          <div class="receipt-thanks">www.hv94.github.io/tech-store-catalog</div>
+        </div>
+      </div>
+
+      <div class="receipt-actions">
+        <button id="downloadPdfReceiptBtn" class="btn btn-primary" title="Scarica lo scontrino in formato PDF reale">
+          📥 Scarica PDF Scontrino
+        </button>
+        <button id="printReceiptBtn" class="btn btn-outline" title="Stampa scontrino da browser">
+          🖨️ Stampa
+        </button>
+        <button id="closeReceiptBtn" class="btn btn-secondary">
+          ✨ Nuova Vendita
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer con Altri Progetti del Portfolio -->
   <footer class="app-footer">
     <div class="container footer-content">
-      <div class="footer-left">
-        <strong>TechStore Manager</strong> &bull; Progetto dimostrativo per posizioni Store Associate / Data Management
+      <div class="other-projects">
+        <span class="other-projects-title">Altri progetti sviluppati da Valentyn Haidukov:</span>
+        <div class="project-pills">
+          <a href="https://hv94.github.io/retail-store-catalog/" target="_blank" class="project-pill-link">
+            🛒 RetailHub (Megastore & Cassa POS)
+          </a>
+          <a href="https://hv94.github.io/bookstore-catalog-manager/" target="_blank" class="project-pill-link">
+            📚 BiblioTech (Catalogo 500 Libri & POS)
+          </a>
+          <a href="https://hv94.github.io/curriculum-vitae/" target="_blank" class="project-pill-link">
+            📄 Curriculum Vitae Ufficiale
+          </a>
+        </div>
       </div>
-      <div class="footer-right">
-        <span>Curato da <strong>Valentyn Haidukov</strong> &bull; Città Sant'Angelo (PE)</span>
+      <div class="footer-bottom">
+        <p>Progetto realizzato da <strong>Valentyn Haidukov</strong> &bull; Perito Informatico (76/100) &bull; Categorie Protette (L. 68/99)</p>
+        <div class="footer-links">
+          <a href="https://github.com/HV94" target="_blank" rel="noopener">GitHub: @HV94</a>
+          <span>&bull;</span>
+          <a href="https://www.linkedin.com/in/valentyn-haidukov" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
       </div>
     </div>
   </footer>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=6.1"></script>
 </body>
 </html>

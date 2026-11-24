@@ -1,32 +1,38 @@
-# TechStore Manager - Catalogo Elettronica & POS Preventivi
+# Catalogo Hardware IT & Preventivi Cassa
 
-Gestionale moderno per catalogo prodotti, specifiche tecniche e preventivazione rapida retail, sviluppato da **Valentyn Haidukov** (Perito Informatico e Telecomunicazioni, Categorie Protette L. 68/99).
+Applicazione web per la consultazione di schede tecniche di componenti informatici, verifica compatibilità hardware e calcolo preventivi per i clienti.
 
-🌐 **Demo Live:** [https://hv94.github.io/tech-store-catalog/](https://hv94.github.io/tech-store-catalog/)  
-👤 **LinkedIn:** [linkedin.com/in/valentyn-haidukov](https://www.linkedin.com/in/valentyn-haidukov)
-
----
-
-## 🎯 Obiettivo del Progetto
-Dimostrare competenze operative e tecniche adatte al settore **Retail Tecnologico ed Elettronica di Consumo** (Trony, MediaWorld, Unieuro) e a ruoli di **Operatore Informatico / Data Entry / Back Office**:
-1. **Padronanza delle Specifiche Hardware:** catalogazione accurata di processori, memorie RAM, GPU, display OLED/IPS e connettività.
-2. **Consulenza al Cliente:** sezione "Guida alla Vendita" con argomentazioni d'uso pratiche per ogni prodotto.
-3. **Gestione Cassa & Preventivi:** simulazione cassa POS con lettura codici EAN/barcode, calcolo scorporo IVA 22% e stampa preventivo in tempo reale.
-4. **Interfaccia Moderna e Veloce:** ricerca istantanea, filtri avanzati per marchio/categoria e responsive design per monitor e tablet da banco cassa.
+Demo online: [https://hv94.github.io/tech-store-catalog/](https://hv94.github.io/tech-store-catalog/)
 
 ---
 
-## 🛠️ Tecnologie Utilizzate
-- **HTML5 Semantico** (struttura accessibile, OpenGraph metadata)
-- **CSS3 Moderno & Custom Properties** (layout Flexbox/Grid, Dark Mode UI, Stili di stampa per preventivi)
-- **JavaScript ES6+** (gestione stato dinamico, filtraggio multi-criterio, carrello reattivo, manipolazione DOM)
-- **Design System ispirato a software gestionali retail**
+## Descrizione del progetto
+
+Questo progetto è nato per esercitarsi sulla catalogazione tecnica dei prodotti informatici e sulla formulazione di preventivi commerciali:
+- Consultazione schede tecniche dettagliate di computer fissi, portatili, monitor, stampanti e accessori.
+- Confronto delle caratteristiche hardware (processore, RAM, disco SSD, sistema operativo, porte e connettività).
+- Aggiunta articoli al preventivo con calcolo automatico dell'imponibile, dello scorporo dell'IVA al 22% e del totale finale.
+- Simulazione di incasso con calcolo del resto o autorizzazione per pagamento elettronico.
 
 ---
 
-## 💻 Come Eseguire Localmente
-1. Clona il repository:
-   ```bash
-   git clone https://github.com/HV94/tech-store-catalog.git
-   ```
-2. Apri il file `index.html` in qualsiasi browser moderno.
+## Categorie di prodotti incluse
+
+- **Computer Portatili & Ultrabook**: notebook da ufficio, workstation grafiche e laptop per smart working.
+- **Computer Desktop & Workstation**: PC aziendali per contabilità, progettazione e magazzino.
+- **Monitor & Display**: schermi Full HD e 4K con ingressi HDMI e DisplayPort.
+- **Componenti & Aggiornamenti**: unità di memorizzazione SSD NVMe, banchi di memoria RAM e periferiche.
+
+---
+
+## Note tecniche e sviluppo
+
+L'applicazione è sviluppata in **HTML5, CSS3 e JavaScript Vanilla** (senza framework esterni).
+
+La struttura e i dati tecnici dei prodotti sono stati impostati con l'ausilio di assistenti AI per velocizzare la stesura del codice dell'interfaccia, concentrandosi sull'accuratezza delle specifiche hardware e sui calcoli di cassa.
+
+---
+
+**Autore**: Valentyn Haidukov  
+- Portfolio: [https://hv94.github.io/curriculum-vitae/](https://hv94.github.io/curriculum-vitae/)  
+- Profilo GitHub: [@HV94](https://github.com/HV94)
