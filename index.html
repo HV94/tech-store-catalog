@@ -237,7 +237,7 @@
           <p class="cart-subtitle">Punto Vendita Hardware IT</p>
         </div>
       </div>
-      <button id="closeCartBtn" class="close-btn" title="Chiudi cassa" onclick="closeCart()">&times;</button>
+      <button id="closeCartBtn" class="close-btn cart-close-corner-btn" title="Chiudi cassa (X)" onclick="closeCart()" aria-label="Chiudi cassa">&times;</button>
     </div>
 
     <div class="cart-drawer-body">
@@ -329,6 +329,9 @@
         </button>
         <button id="clearCartBtn" class="btn btn-clear-cart" title="Azzera cassa">
           Svuota Cassa
+        </button>
+        <button id="continueShoppingBtn" class="btn btn-secondary" onclick="closeCart()" style="margin-top: 0.5rem; width: 100%;">
+          ← Continua Acquisti / Chiudi Cassa
         </button>
       </div>
     </div>
