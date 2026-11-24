@@ -29,7 +29,7 @@ const CATALOGO_HARDWARE = [
     ean: '194253131001',
     specifiche: 'Chip Apple M2 (8 CPU / 8 GPU), 8GB RAM Unificata, SSD 256GB, Display Liquid Retina 13.6", Autonomia 18h.',
     icona: '💻',
-    immagine: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-1.jpg'
   },
   {
     id: 2,
@@ -43,7 +43,7 @@ const CATALOGO_HARDWARE = [
     ean: '019680345678',
     specifiche: 'Intel Core i7-1355U, 16GB RAM DDR5, SSD 512GB NVMe PCIe 4.0, Display 14" IPS FHD+ 400 nits, Windows 11 Pro.',
     icona: '💻',
-    immagine: 'https://images.unsplash.com/photo-1587614382346-4ec70e388b28?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-2.jpg'
   },
   {
     id: 3,
@@ -57,7 +57,7 @@ const CATALOGO_HARDWARE = [
     ean: '539718471209',
     specifiche: 'Intel Core i7-1360P, 32GB LPDDR5, SSD 1TB NVMe, Schermo 13.4" OLED 3.5K Touch, Chassis Alluminio CNC.',
     icona: '💻',
-    immagine: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-3.jpg'
   },
   {
     id: 4,
@@ -71,7 +71,7 @@ const CATALOGO_HARDWARE = [
     ean: '471138709123',
     specifiche: 'Intel Core Ultra 9 185H, NVIDIA RTX 4070 8GB GDDR6, 32GB RAM DDR5, SSD 1TB, Display 16" OLED 240Hz ROG Nebula.',
     icona: '💻',
-    immagine: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-4.jpg'
   },
 
   // Categoria: Smartphone & Tablet
@@ -87,7 +87,7 @@ const CATALOGO_HARDWARE = [
     ean: '195949038291',
     specifiche: 'Chip A17 Pro (3nm), Design in Titanio Grado 5, Fotocamera principale 48MP con teleobiettivo 3x, Porta USB-C 3.0.',
     icona: '📱',
-    immagine: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-5.jpg'
   },
   {
     id: 6,
@@ -101,7 +101,7 @@ const CATALOGO_HARDWARE = [
     ean: '880609532187',
     specifiche: 'Snapdragon 8 Gen 3 for Galaxy, 12GB RAM, Display Dynamic AMOLED 2X 6.8" 120Hz antiriflesso, Fotocamera 200MP, S Pen.',
     icona: '📱',
-    immagine: 'https://images.unsplash.com/photo-1738830223726-151adcd58131?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-6.jpg'
   },
   {
     id: 7,
@@ -115,7 +115,7 @@ const CATALOGO_HARDWARE = [
     ean: '084024470512',
     specifiche: 'Google Tensor G3 con chip Titan M2, Fotocamera tripla con zoom 30x, Display Super Actua 6.7" OLED 120Hz, 7 anni update.',
     icona: '📱',
-    immagine: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-7.jpg'
   },
   {
     id: 8,
@@ -129,7 +129,7 @@ const CATALOGO_HARDWARE = [
     ean: '195949392019',
     specifiche: 'Chip Apple M2, Display Liquid Retina 11" con True Tone e ampia gamma cromatica P3, supporto Apple Pencil Pro.',
     icona: '📲',
-    immagine: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-8.jpg'
   },
 
   // Categoria: Audio & Smart TV
@@ -145,7 +145,7 @@ const CATALOGO_HARDWARE = [
     ean: '454873613256',
     specifiche: 'Cancellazione attiva del rumore leader del settore con doppio processore V1/QN1, 8 microfoni, Autonomia 30h, Audio Hi-Res LDAC.',
     icona: '🎧',
-    immagine: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-9.jpg'
   },
   {
     id: 10,
@@ -159,7 +159,7 @@ const CATALOGO_HARDWARE = [
     ean: '195949052518',
     specifiche: 'Chip Apple H2, Cancellazione attiva del rumore raddoppiata, Audio Spaziale personalizzato, Custodia MagSafe USB-C.',
     icona: '🎧',
-    immagine: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-10.jpg'
   },
   {
     id: 11,
@@ -173,7 +173,7 @@ const CATALOGO_HARDWARE = [
     ean: '880609172901',
     specifiche: 'Pannello OLED 4K con pixel autoilluminanti, Processore α9 Gen6 4K, 4 porte HDMI 2.1 (4K@120Hz, VRR, G-Sync), webOS 23.',
     icona: '📺',
-    immagine: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-11.jpg'
   },
   {
     id: 12,
@@ -187,7 +187,7 @@ const CATALOGO_HARDWARE = [
     ean: '017817843219',
     specifiche: 'Audio Immersivo Bose con tracciamento spaziale della testa, Modalità Quiet/Aware, 24 ore di autonomia, cuscinetti in pelle sintetica.',
     icona: '🎧',
-    immagine: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-12.jpg'
   },
 
   // Categoria: Componenti & Gaming
@@ -203,7 +203,7 @@ const CATALOGO_HARDWARE = [
     ean: '083516800341',
     specifiche: 'Architettura Ada Lovelace, 12GB GDDR6X su bus 192-bit, DLSS 3.5 con Frame Generation, Ray Tracing di 3ª generazione.',
     icona: '🖥️',
-    immagine: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-13.jpg'
   },
   {
     id: 14,
@@ -217,7 +217,7 @@ const CATALOGO_HARDWARE = [
     ean: '073014331493',
     specifiche: '8 Core / 16 Thread su socket AM5, 96MB 3D V-Cache (104MB cache totale), Boost fino a 5.0 GHz, TDP 120W, PCIe 5.0.',
     icona: '🔲',
-    immagine: 'https://images.unsplash.com/photo-1555680202-c86f0e12f086?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-14.jpg'
   },
   {
     id: 15,
@@ -231,7 +231,7 @@ const CATALOGO_HARDWARE = [
     ean: '880609439210',
     specifiche: 'Lettura sequenziale fino a 7.450 MB/s, scrittura fino a 6.900 MB/s, fattore di forma M.2 2280, controller Pascal, garanzia 5 anni.',
     icona: '💽',
-    immagine: 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-15.jpg'
   },
   {
     id: 16,
@@ -245,7 +245,7 @@ const CATALOGO_HARDWARE = [
     ean: '084000669988',
     specifiche: 'Frequenza 6000MHz, Latenza CL30, Supporto profili Intel XMP 3.0 e AMD EXPO, Dissipatore in alluminio con barra LED RGB.',
     icona: '⚡',
-    immagine: 'https://images.unsplash.com/photo-1562976540-1502c2145186?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-16.jpg'
   },
 
   // Categoria: Monitor & Accessori
@@ -261,7 +261,7 @@ const CATALOGO_HARDWARE = [
     ean: '539718465689',
     specifiche: 'Pannello IPS Black con contrasto 2000:1, Risoluzione 4K UHD (3840x2160), 98% DCI-P3, Hub USB-C con Power Delivery 90W e porta RJ45.',
     icona: '🖥️',
-    immagine: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-17.jpg'
   },
   {
     id: 18,
@@ -275,7 +275,7 @@ const CATALOGO_HARDWARE = [
     ean: '509920610373',
     specifiche: 'Sensore ottico Darkfield 8000 DPI utilizzabile anche su vetro, Scorrimento elettromagnetico MagSpeed, Clic silenziosi (-90% rumore).',
     icona: '🖱️',
-    immagine: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-18.jpg'
   },
   {
     id: 19,
@@ -289,7 +289,7 @@ const CATALOGO_HARDWARE = [
     ean: '489524882194',
     specifiche: 'Layout 75%, Switch Meccanici Hot-swap Keychron K Pro Red, Connessione Bluetooth 5.1 e cavo Type-C, Compatibile Mac & Windows.',
     icona: '⌨️',
-    immagine: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-19.jpg'
   },
   {
     id: 20,
@@ -303,7 +303,7 @@ const CATALOGO_HARDWARE = [
     ean: '085002258901',
     specifiche: '18 Porte di espansione: 3x Thunderbolt 4, 5x USB-A 3.2, 3x USB-C 10Gbps, DisplayPort 1.4, Ethernet 2.5GbE, Power Delivery fino a 98W.',
     icona: '🔌',
-    immagine: 'https://images.unsplash.com/photo-1625842268584-8f3296236761?auto=format&fit=crop&w=600&q=80'
+    immagine: 'images/prod-20.jpg'
   }
 ];
 
