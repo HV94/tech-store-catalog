@@ -43,7 +43,7 @@ const CATALOGO_HARDWARE = [
     ean: '019680345678',
     specifiche: 'Intel Core i7-1355U, 16GB RAM DDR5, SSD 512GB NVMe PCIe 4.0, Display 14" IPS FHD+ 400 nits, Windows 11 Pro.',
     icona: '💻',
-    immagine: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=600&q=80'
+    immagine: 'https://images.unsplash.com/photo-1587614382346-4ec70e388b28?auto=format&fit=crop&w=600&q=80'
   },
   {
     id: 3,
@@ -101,7 +101,7 @@ const CATALOGO_HARDWARE = [
     ean: '880609532187',
     specifiche: 'Snapdragon 8 Gen 3 for Galaxy, 12GB RAM, Display Dynamic AMOLED 2X 6.8" 120Hz antiriflesso, Fotocamera 200MP, S Pen.',
     icona: '📱',
-    immagine: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=600&q=80'
+    immagine: 'https://images.unsplash.com/photo-1738830223726-151adcd58131?auto=format&fit=crop&w=600&q=80'
   },
   {
     id: 7,
