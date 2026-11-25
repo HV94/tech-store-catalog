@@ -560,7 +560,7 @@ function renderCatalogo() {
 
     return `
       <article class="product-card" data-id="${p.id}">
-        <div class="product-image-container" style="position: relative; width: 100%; height: 180px; border-radius: 12px; overflow: hidden; background: #ffffff; display: flex; align-items: center; justify-content: center; padding: 12px; cursor: pointer; border: 1px solid rgba(255,255,255,0.08);" onclick="openProductModal(${p.id})">
+        <div class="product-image-container" style="position: relative; width: 100%; height: 180px; border-radius: 12px; overflow: hidden; background: #111827; display: flex; align-items: center; justify-content: center; padding: 12px; cursor: pointer; border: 1px solid rgba(255,255,255,0.08);" onclick="openProductModal(${p.id})">
           <img src="${p.immagine}" alt="${p.nome}" loading="lazy" style="max-width: 100%; max-height: 100%; object-fit: contain; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
           <div style="display: none; width: 100%; height: 100%; align-items: center; justify-content: center; font-size: 2.8rem; background: #ffffff; color: #0f172a;">${p.icona}</div>
           <span style="position: absolute; top: 8px; right: 8px; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(4px); padding: 3px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3);">${p.icona} ${p.marca}</span>
@@ -631,7 +631,7 @@ function openProductModal(id) {
 
   content.innerHTML = `
     <div style="display: flex; gap: 1.25rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem;">
-      <div style="width: 130px; height: 130px; border-radius: 12px; overflow: hidden; background: #ffffff; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; padding: 10px;">
+      <div style="width: 130px; height: 130px; border-radius: 12px; overflow: hidden; background: #111827; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; padding: 10px;">
         <img src="${prodotto.immagine}" alt="${prodotto.nome}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
       </div>
       <div style="flex: 1; min-width: 200px;">
