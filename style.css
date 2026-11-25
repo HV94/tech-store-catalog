@@ -2255,7 +2255,9 @@ body {
 }
 
 /* ==========================================================================
-   STAMPA A 1 SOLA PAGINA (@media print {
+   STAMPA A 1 SOLA PAGINA (@media print) - SCONTRINO FISCALE TERMICO
+   ========================================================================== */
+@media print {
   @page {
     size: auto;
     margin: 10mm auto;
